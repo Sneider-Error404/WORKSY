@@ -19,57 +19,30 @@ model archivos {
 }
 
 model categorias {
-  id_categoria     Int    @id @default(autoincrement())
-  nombre_categoria String @unique(map: "nombre_categoria") @db.VarChar(100)
+  id_categoria     Int         @id @default(autoincrement())
+  nombre_categoria String      @unique(map: "nombre_categoria") @db.VarChar(100)
+  servicios        servicios[]
+  vacantes         vacantes[]
 }
 
 model conversaciones {
   id_conversacion Int        @id @default(autoincrement())
   id_usuario      Int
-  id_empresa      Int
-  fecha_creacion  DateTime?  @default(now()) @db.DateTime(0)
+  id_vacante      Int
   estado          String?    @default("activa") @db.VarChar(50)
+  fecha_creacion  DateTime?  @default(now()) @db.DateTime(0)
   usuarios        usuarios   @relation(fields: [id_usuario], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction, map: "conversaciones_ibfk_1")
-  empresas        empresas   @relation(fields: [id_empresa], references: [id_empresa], onDelete: NoAction, onUpdate: NoAction, map: "conversaciones_ibfk_2")
+  vacantes        vacantes   @relation(fields: [id_vacante], references: [id_vacante], onDelete: NoAction, onUpdate: NoAction, map: "conversaciones_ibfk_2")
   mensajes        mensajes[]
 
-  @@index([id_empresa], map: "id_empresa")
-  @@index([id_usuario], map: "id_usuario")
+  @@unique([id_usuario, id_vacante], map: "id_usuario")
+  @@index([id_vacante], map: "id_vacante")
 }
 
 model departamentos {
   id_departamento     Int          @id @default(autoincrement())
   nombre_departamento String       @unique(map: "nombre_departamento") @db.VarChar(100)
   municipios          municipios[]
-}
-
-model empresa_usuarios_favoritos {
-  id_favorito    Int       @id @default(autoincrement())
-  id_empresa     Int
-  id_usuario     Int
-  fecha_guardado DateTime? @default(now()) @db.DateTime(0)
-  empresas       empresas  @relation(fields: [id_empresa], references: [id_empresa], onDelete: NoAction, onUpdate: NoAction, map: "empresa_usuarios_favoritos_ibfk_1")
-  usuarios       usuarios  @relation(fields: [id_usuario], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction, map: "empresa_usuarios_favoritos_ibfk_2")
-
-  @@index([id_empresa], map: "id_empresa")
-  @@index([id_usuario], map: "id_usuario")
-}
-
-model empresas {
-  id_empresa                 Int                          @id @default(autoincrement())
-  nombre_empresa             String                       @db.VarChar(150)
-  correo                     String                       @unique(map: "correo") @db.VarChar(100)
-  contrase_a                 String                       @map("contraseña") @db.VarChar(255)
-  telefono                   String?                      @db.VarChar(20)
-  descripcion                String?                      @db.Text
-  sector                     String?                      @db.VarChar(100)
-  ubicacion                  String?                      @db.VarChar(150)
-  logo_empresa               String?                      @db.VarChar(255)
-  fecha_registro             DateTime?                    @default(now()) @db.DateTime(0)
-  conversaciones             conversaciones[]
-  empresa_usuarios_favoritos empresa_usuarios_favoritos[]
-  seguidores_empresa         seguidores_empresa[]
-  vacantes                   vacantes[]
 }
 
 model habilidades {
@@ -96,17 +69,25 @@ model municipios {
   id_departamento  Int
   nombre_municipio String        @db.VarChar(100)
   departamentos    departamentos @relation(fields: [id_departamento], references: [id_departamento], onDelete: NoAction, onUpdate: NoAction, map: "municipios_ibfk_1")
+  servicios        servicios[]
+  vacantes         vacantes[]
 
   @@index([id_departamento], map: "id_departamento")
 }
 
 model notificaciones {
-  id_notificacion   Int       @id @default(autoincrement())
-  tipo_destinatario String?   @db.VarChar(50)
-  id_destinatario   Int?
-  mensaje           String?   @db.Text
-  leido             Boolean?  @default(false)
-  fecha             DateTime? @default(now()) @db.DateTime(0)
+  id_notificacion   Int               @id @default(autoincrement())
+  id_usuario        Int?
+  id_perfil_empresa Int?
+  tipo              String?           @db.VarChar(50)
+  mensaje           String?           @db.Text
+  leido             Boolean?          @default(false)
+  fecha             DateTime?         @default(now()) @db.DateTime(0)
+  usuarios          usuarios?         @relation(fields: [id_usuario], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction, map: "notificaciones_ibfk_1")
+  perfiles_empresa  perfiles_empresa? @relation(fields: [id_perfil_empresa], references: [id_perfil_empresa], onDelete: NoAction, onUpdate: NoAction, map: "notificaciones_ibfk_2")
+
+  @@index([id_perfil_empresa], map: "id_perfil_empresa")
+  @@index([id_usuario], map: "id_usuario")
 }
 
 model postulaciones {
@@ -118,7 +99,7 @@ model postulaciones {
   usuarios          usuarios  @relation(fields: [id_usuario], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction, map: "postulaciones_ibfk_1")
   vacantes          vacantes  @relation(fields: [id_vacante], references: [id_vacante], onDelete: NoAction, onUpdate: NoAction, map: "postulaciones_ibfk_2")
 
-  @@index([id_usuario], map: "id_usuario")
+  @@unique([id_usuario, id_vacante], map: "id_usuario")
   @@index([id_vacante], map: "id_vacante")
 }
 
@@ -136,15 +117,15 @@ model proyectos {
 }
 
 model seguidores_empresa {
-  id_seguimiento    Int       @id @default(autoincrement())
+  id_seguimiento    Int              @id @default(autoincrement())
   id_usuario        Int
-  id_empresa        Int
-  fecha_seguimiento DateTime? @default(now()) @db.DateTime(0)
-  usuarios          usuarios  @relation(fields: [id_usuario], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction, map: "seguidores_empresa_ibfk_1")
-  empresas          empresas  @relation(fields: [id_empresa], references: [id_empresa], onDelete: NoAction, onUpdate: NoAction, map: "seguidores_empresa_ibfk_2")
+  id_perfil_empresa Int
+  fecha_seguimiento DateTime?        @default(now()) @db.DateTime(0)
+  usuarios          usuarios         @relation(fields: [id_usuario], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction, map: "seguidores_empresa_ibfk_1")
+  perfiles_empresa  perfiles_empresa @relation(fields: [id_perfil_empresa], references: [id_perfil_empresa], onDelete: NoAction, onUpdate: NoAction, map: "seguidores_empresa_ibfk_2")
 
-  @@index([id_empresa], map: "id_empresa")
-  @@index([id_usuario], map: "id_usuario")
+  @@unique([id_usuario, id_perfil_empresa], map: "id_usuario")
+  @@index([id_perfil_empresa], map: "id_perfil_empresa")
 }
 
 model usuario_habilidades {
@@ -161,43 +142,97 @@ model usuario_habilidades {
 }
 
 model usuarios {
-  id_usuario                 Int                          @id @default(autoincrement())
-  nombre                     String                       @db.VarChar(100)
-  apellido                   String                       @db.VarChar(100)
-  correo                     String                       @unique(map: "correo") @db.VarChar(100)
-  contrase_a                 String                       @map("contraseña") @db.VarChar(255)
-  telefono                   String?                      @db.VarChar(20)
-  universidad                String?                      @db.VarChar(150)
-  carrera                    String?                      @db.VarChar(150)
-  descripcion_personal       String?                      @db.Text
-  experiencia                String?                      @db.Text
-  disponibilidad_laboral     String?                      @db.VarChar(100)
-  foto_perfil                String?                      @db.VarChar(255)
-  fecha_registro             DateTime?                    @default(now()) @db.DateTime(0)
-  archivos                   archivos[]
-  conversaciones             conversaciones[]
-  empresa_usuarios_favoritos empresa_usuarios_favoritos[]
-  postulaciones              postulaciones[]
-  proyectos                  proyectos[]
-  seguidores_empresa         seguidores_empresa[]
-  usuario_habilidades        usuario_habilidades[]
+  id_usuario             Int                   @id @default(autoincrement())
+  nombre                 String                @db.VarChar(100)
+  apellido               String                @db.VarChar(100)
+  correo                 String                @unique(map: "correo") @db.VarChar(100)
+  contrase_a             String                @map("contraseña") @db.VarChar(255)
+  telefono               String?               @db.VarChar(20)
+  universidad            String?               @db.VarChar(150)
+  carrera                String?               @db.VarChar(150)
+  descripcion_personal   String?               @db.Text
+  disponibilidad_laboral String?               @db.VarChar(100)
+  foto_perfil            String?               @db.VarChar(255)
+  primer_empleo          Boolean?              @default(true)
+  fecha_registro         DateTime?             @default(now()) @db.DateTime(0)
+  archivos               archivos[]
+  conversaciones         conversaciones[]
+  favoritos              favoritos[]
+  notificaciones         notificaciones[]
+  perfiles_empresa       perfiles_empresa?
+  postulaciones          postulaciones[]
+  proyectos              proyectos[]
+  seguidores_empresa     seguidores_empresa[]
+  servicios              servicios[]
+  usuario_habilidades    usuario_habilidades[]
 }
 
 model vacantes {
-  id_vacante           Int             @id @default(autoincrement())
-  id_empresa           Int
-  titulo               String          @db.VarChar(150)
-  descripcion          String?         @db.Text
-  salario              Decimal?        @db.Decimal(10, 2)
-  ubicacion            String?         @db.VarChar(150)
-  modalidad            String?         @db.VarChar(50)
-  categoria            String?         @db.VarChar(100)
-  tipo_empleo          String?         @db.VarChar(100)
-  requiere_experiencia Boolean?
-  estado               String?         @db.VarChar(50)
-  fecha_publicacion    DateTime?       @default(now()) @db.DateTime(0)
+  id_vacante           Int              @id @default(autoincrement())
+  id_perfil_empresa    Int
+  titulo               String           @db.VarChar(150)
+  descripcion          String?          @db.Text
+  salario              Decimal?         @db.Decimal(10, 2)
+  modalidad            String?          @db.VarChar(50)
+  tipo_empleo          String?          @db.VarChar(100)
+  requiere_experiencia Boolean?         @default(false)
+  acepta_primer_empleo Boolean?         @default(true)
+  estado               String?          @default("activa") @db.VarChar(50)
+  id_categoria         Int?
+  id_municipio         Int?
+  fecha_publicacion    DateTime?        @default(now()) @db.DateTime(0)
+  conversaciones       conversaciones[]
   postulaciones        postulaciones[]
-  empresas             empresas        @relation(fields: [id_empresa], references: [id_empresa], onDelete: NoAction, onUpdate: NoAction, map: "vacantes_ibfk_1")
+  perfiles_empresa     perfiles_empresa @relation(fields: [id_perfil_empresa], references: [id_perfil_empresa], onDelete: NoAction, onUpdate: NoAction, map: "vacantes_ibfk_1")
+  categorias           categorias?      @relation(fields: [id_categoria], references: [id_categoria], onDelete: NoAction, onUpdate: NoAction, map: "vacantes_ibfk_2")
+  municipios           municipios?      @relation(fields: [id_municipio], references: [id_municipio], onDelete: NoAction, onUpdate: NoAction, map: "vacantes_ibfk_3")
 
-  @@index([id_empresa], map: "id_empresa")
+  @@index([id_categoria], map: "id_categoria")
+  @@index([id_municipio], map: "id_municipio")
+  @@index([id_perfil_empresa], map: "id_perfil_empresa")
+}
+
+model favoritos {
+  id_favorito       Int              @id @default(autoincrement())
+  id_perfil_empresa Int
+  id_usuario        Int
+  fecha_guardado    DateTime?        @default(now()) @db.DateTime(0)
+  perfiles_empresa  perfiles_empresa @relation(fields: [id_perfil_empresa], references: [id_perfil_empresa], onDelete: NoAction, onUpdate: NoAction, map: "favoritos_ibfk_1")
+  usuarios          usuarios         @relation(fields: [id_usuario], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction, map: "favoritos_ibfk_2")
+
+  @@unique([id_perfil_empresa, id_usuario], map: "id_perfil_empresa")
+  @@index([id_usuario], map: "id_usuario")
+}
+
+model perfiles_empresa {
+  id_perfil_empresa  Int                  @id @default(autoincrement())
+  id_usuario         Int                  @unique(map: "id_usuario")
+  nombre_empresa     String               @db.VarChar(150)
+  descripcion        String?              @db.Text
+  sector             String?              @db.VarChar(100)
+  logo_empresa       String?              @db.VarChar(255)
+  verificada         Boolean?             @default(false)
+  fecha_creacion     DateTime?            @default(now()) @db.DateTime(0)
+  favoritos          favoritos[]
+  notificaciones     notificaciones[]
+  usuarios           usuarios             @relation(fields: [id_usuario], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction, map: "perfiles_empresa_ibfk_1")
+  seguidores_empresa seguidores_empresa[]
+  vacantes           vacantes[]
+}
+
+model servicios {
+  id_servicio       Int         @id @default(autoincrement())
+  id_usuario        Int
+  titulo            String      @db.VarChar(150)
+  descripcion       String?     @db.Text
+  id_categoria      Int?
+  id_municipio      Int?
+  fecha_publicacion DateTime?   @default(now()) @db.DateTime(0)
+  usuarios          usuarios    @relation(fields: [id_usuario], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction, map: "servicios_ibfk_1")
+  categorias        categorias? @relation(fields: [id_categoria], references: [id_categoria], onDelete: NoAction, onUpdate: NoAction, map: "servicios_ibfk_2")
+  municipios        municipios? @relation(fields: [id_municipio], references: [id_municipio], onDelete: NoAction, onUpdate: NoAction, map: "servicios_ibfk_3")
+
+  @@index([id_categoria], map: "id_categoria")
+  @@index([id_municipio], map: "id_municipio")
+  @@index([id_usuario], map: "id_usuario")
 }
