@@ -1,7 +1,11 @@
 const express = require("express");
 const { PrismaClient } = require("@prisma/client");
 
+
+// Importar rutas
 const authRoutes = require("./routes/authRoutes");
+const usuariosRoutes = require("./routes/usuariosRoutes");
+
 
 const prisma = new PrismaClient();
 
@@ -9,7 +13,11 @@ const app = express();
 
 app.use(express.json());
 
+
+// registrar rutas
 app.use("/auth", authRoutes);
+app.use("/usuarios", usuariosRoutes);
+
 
 app.get("/", (req, res) => {
   res.send("Backend funcionando correctamente");
