@@ -144,7 +144,7 @@ model usuario_habilidades {
 model usuarios {
   id_usuario             Int                   @id @default(autoincrement())
   nombre                 String                @db.VarChar(100)
-  apellido               String                @db.VarChar(100)
+  apellido               String?               @db.VarChar(100)
   correo                 String                @unique(map: "correo") @db.VarChar(100)
   contrase_a             String                @map("contraseña") @db.VarChar(255)
   telefono               String?               @db.VarChar(20)
