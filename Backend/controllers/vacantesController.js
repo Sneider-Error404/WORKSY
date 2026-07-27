@@ -47,6 +47,27 @@ exports.crearVacante = async (req, res) => {
     }
 };
 
+// Obtener todas las vacantes
+exports.obtenerVacantes = async (req, res) => {
+
+    try {
+
+        const vacantes = await prisma.vacantes.findMany();
+
+        res.json(vacantes);
+
+    } catch (error) {
+
+        console.error(error);
+
+        res.status(500).json({
+            error: "Error al obtener las vacantes"
+        });
+
+    }
+
+};
+
 exports.obtenerVacante = async (req, res) => {
 
     const id = Number(req.params.id);

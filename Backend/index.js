@@ -8,7 +8,8 @@ const usuariosRoutes = require("./routes/usuariosRoutes");
 const perfilEmpresaRoutes = require("./routes/perfilEmpresaController");
 const postulacionesRoutes = require("./routes/postulacionesController");
 const vacantesRoutes = require("./routes/vacantesController");
-
+const serviciosRoutes = require("./routes/serviciosRoutes");
+const seguirEmpresaRoutes = require("./routes/seguirEmpresaRoutes");
 
 const prisma = new PrismaClient();
 
@@ -23,8 +24,10 @@ app.use("/usuarios", usuariosRoutes);
 app.use("/perfil-empresa", perfilEmpresaRoutes);
 app.use("/postulaciones", postulacionesRoutes);
 app.use("/vacantes", vacantesRoutes);
+app.use("/servicios", serviciosRoutes);
+app.use("/seguir-empresa", seguirEmpresaRoutes);
 
-
+// Ruta principal
 app.get("/", (req, res) => {
   res.send("Backend funcionando correctamente");
 });

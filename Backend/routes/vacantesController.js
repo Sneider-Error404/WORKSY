@@ -1,19 +1,22 @@
-const prisma = require("express");
+const express = require("express");
 
-const router = prisma.Router();
+const router = express.Router();
 
 const vacantesController = require("../controllers/vacantesController");
 
-// crear un perfil de empresa
+// Crear una vacante
 router.post("/", vacantesController.crearVacante);
 
-// obtener un perfil de empresa
-router.get("/:id", vacantesController.obtenerVacante);  
+// Obtener todas las vacantes
+router.get("/", vacantesController.obtenerVacantes);
 
-// actualizar un perfil de empresa
+// Obtener una vacante
+router.get("/:id", vacantesController.obtenerVacante);
+
+// Actualizar una vacante
 router.put("/:id", vacantesController.actualizarVacante);
 
-// eliminar perfil de empresa
+// Eliminar una vacante
 router.delete("/:id", vacantesController.eliminarVacante);
 
 module.exports = router;
