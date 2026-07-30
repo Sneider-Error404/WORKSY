@@ -11,6 +11,14 @@ exports.test = (req, res) => {
 
 exports.register = async (req, res) => {
 
+    res.json({
+        mensaje: "Ruta de registro funcionando correctamente."
+    });
+
+};
+
+exports.register = async (req, res) => {
+
     try {
 
         const {
