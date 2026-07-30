@@ -1,4 +1,12 @@
-node_modules
+# Dependencias
+node_modules/
+
+# Variables de entorno
 .env
-Backend/node_modules
-Backend/.env
+
+# Visual Studio
+.vs/
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
