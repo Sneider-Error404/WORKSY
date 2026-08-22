@@ -5,10 +5,12 @@ const { PrismaClient } = require("@prisma/client");
 // Importar rutas
 const authRoutes = require("./routes/authRoutes");
 const usuariosRoutes = require("./routes/usuariosRoutes");
-const perfilEmpresaRoutes = require("./routes/perfilEmpresaController");
-const postulacionesRoutes = require("./routes/postulacionesController");
-const vacantesRoutes = require("./routes/vacantesController");
-
+const perfilEmpresaRoutes = require("./routes/perfilEmpresaRoutes");
+const postulacionesRoutes = require("./routes/postulacionesRoutes");
+const vacantesRoutes = require("./routes/vacantesRoutes");
+const serviciosRoutes = require("./routes/serviciosRoutes");
+const seguirEmpresaRoutes = require("./routes/seguirEmpresaRoutes");
+const favoritosRoutes = require("./routes/favoritosRoutes");
 
 const prisma = new PrismaClient();
 
@@ -23,8 +25,11 @@ app.use("/usuarios", usuariosRoutes);
 app.use("/perfil-empresa", perfilEmpresaRoutes);
 app.use("/postulaciones", postulacionesRoutes);
 app.use("/vacantes", vacantesRoutes);
+app.use("/servicios", serviciosRoutes);
+app.use("/seguir-empresa", seguirEmpresaRoutes);
+app.use("/favoritos", favoritosRoutes);
 
-
+// Ruta principal
 app.get("/", (req, res) => {
   res.send("Backend funcionando correctamente");
 });
