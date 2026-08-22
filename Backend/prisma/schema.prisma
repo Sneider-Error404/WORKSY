@@ -13,7 +13,7 @@ model archivos {
   tipo_archivo String?   @db.VarChar(50)
   url_archivo  String?   @db.VarChar(255)
   fecha_subida DateTime? @default(now()) @db.DateTime(0)
-  usuarios     usuarios  @relation(fields: [id_usuario], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction, map: "archivos_ibfk_1")
+  usuarios     usuarios  @relation(fields: [id_usuario], references: [id_usuario], onUpdate: Restrict, map: "archivos_ibfk_1")
 
   @@index([id_usuario], map: "id_usuario")
 }
@@ -31,8 +31,8 @@ model conversaciones {
   id_vacante      Int
   estado          String?    @default("activa") @db.VarChar(50)
   fecha_creacion  DateTime?  @default(now()) @db.DateTime(0)
-  usuarios        usuarios   @relation(fields: [id_usuario], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction, map: "conversaciones_ibfk_1")
-  vacantes        vacantes   @relation(fields: [id_vacante], references: [id_vacante], onDelete: NoAction, onUpdate: NoAction, map: "conversaciones_ibfk_2")
+  usuarios        usuarios   @relation(fields: [id_usuario], references: [id_usuario], onUpdate: Restrict, map: "conversaciones_ibfk_1")
+  vacantes        vacantes   @relation(fields: [id_vacante], references: [id_vacante], onUpdate: Restrict, map: "conversaciones_ibfk_2")
   mensajes        mensajes[]
 
   @@unique([id_usuario, id_vacante], map: "id_usuario")
@@ -59,7 +59,7 @@ model mensajes {
   contenido       String?        @db.Text
   leido           Boolean?       @default(false)
   fecha_envio     DateTime?      @default(now()) @db.DateTime(0)
-  conversaciones  conversaciones @relation(fields: [id_conversacion], references: [id_conversacion], onDelete: NoAction, onUpdate: NoAction, map: "mensajes_ibfk_1")
+  conversaciones  conversaciones @relation(fields: [id_conversacion], references: [id_conversacion], onUpdate: Restrict, map: "mensajes_ibfk_1")
 
   @@index([id_conversacion], map: "id_conversacion")
 }
@@ -68,7 +68,7 @@ model municipios {
   id_municipio     Int           @id @default(autoincrement())
   id_departamento  Int
   nombre_municipio String        @db.VarChar(100)
-  departamentos    departamentos @relation(fields: [id_departamento], references: [id_departamento], onDelete: NoAction, onUpdate: NoAction, map: "municipios_ibfk_1")
+  departamentos    departamentos @relation(fields: [id_departamento], references: [id_departamento], onUpdate: Restrict, map: "municipios_ibfk_1")
   servicios        servicios[]
   vacantes         vacantes[]
 
@@ -83,8 +83,8 @@ model notificaciones {
   mensaje           String?           @db.Text
   leido             Boolean?          @default(false)
   fecha             DateTime?         @default(now()) @db.DateTime(0)
-  usuarios          usuarios?         @relation(fields: [id_usuario], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction, map: "notificaciones_ibfk_1")
-  perfiles_empresa  perfiles_empresa? @relation(fields: [id_perfil_empresa], references: [id_perfil_empresa], onDelete: NoAction, onUpdate: NoAction, map: "notificaciones_ibfk_2")
+  usuarios          usuarios?         @relation(fields: [id_usuario], references: [id_usuario], onDelete: Restrict, onUpdate: Restrict, map: "notificaciones_ibfk_1")
+  perfiles_empresa  perfiles_empresa? @relation(fields: [id_perfil_empresa], references: [id_perfil_empresa], onDelete: Restrict, onUpdate: Restrict, map: "notificaciones_ibfk_2")
 
   @@index([id_perfil_empresa], map: "id_perfil_empresa")
   @@index([id_usuario], map: "id_usuario")
@@ -96,8 +96,8 @@ model postulaciones {
   id_vacante        Int
   estado            String?   @default("pendiente") @db.VarChar(50)
   fecha_postulacion DateTime? @default(now()) @db.DateTime(0)
-  usuarios          usuarios  @relation(fields: [id_usuario], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction, map: "postulaciones_ibfk_1")
-  vacantes          vacantes  @relation(fields: [id_vacante], references: [id_vacante], onDelete: NoAction, onUpdate: NoAction, map: "postulaciones_ibfk_2")
+  usuarios          usuarios  @relation(fields: [id_usuario], references: [id_usuario], onUpdate: Restrict, map: "postulaciones_ibfk_1")
+  vacantes          vacantes  @relation(fields: [id_vacante], references: [id_vacante], onUpdate: Restrict, map: "postulaciones_ibfk_2")
 
   @@unique([id_usuario, id_vacante], map: "id_usuario")
   @@index([id_vacante], map: "id_vacante")
@@ -111,7 +111,7 @@ model proyectos {
   tipo_proyecto  String?   @db.VarChar(100)
   link_proyecto  String?   @db.VarChar(255)
   fecha_creacion DateTime? @default(now()) @db.DateTime(0)
-  usuarios       usuarios  @relation(fields: [id_usuario], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction, map: "proyectos_ibfk_1")
+  usuarios       usuarios  @relation(fields: [id_usuario], references: [id_usuario], onUpdate: Restrict, map: "proyectos_ibfk_1")
 
   @@index([id_usuario], map: "id_usuario")
 }
@@ -121,8 +121,8 @@ model seguidores_empresa {
   id_usuario        Int
   id_perfil_empresa Int
   fecha_seguimiento DateTime?        @default(now()) @db.DateTime(0)
-  usuarios          usuarios         @relation(fields: [id_usuario], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction, map: "seguidores_empresa_ibfk_1")
-  perfiles_empresa  perfiles_empresa @relation(fields: [id_perfil_empresa], references: [id_perfil_empresa], onDelete: NoAction, onUpdate: NoAction, map: "seguidores_empresa_ibfk_2")
+  usuarios          usuarios         @relation(fields: [id_usuario], references: [id_usuario], onUpdate: Restrict, map: "seguidores_empresa_ibfk_1")
+  perfiles_empresa  perfiles_empresa @relation(fields: [id_perfil_empresa], references: [id_perfil_empresa], onUpdate: Restrict, map: "seguidores_empresa_ibfk_2")
 
   @@unique([id_usuario, id_perfil_empresa], map: "id_usuario")
   @@index([id_perfil_empresa], map: "id_perfil_empresa")
@@ -134,8 +134,8 @@ model usuario_habilidades {
   id_habilidad         Int
   descripcion          String?     @db.Text
   link_evidencia       String?     @db.VarChar(255)
-  usuarios             usuarios    @relation(fields: [id_usuario], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction, map: "usuario_habilidades_ibfk_1")
-  habilidades          habilidades @relation(fields: [id_habilidad], references: [id_habilidad], onDelete: NoAction, onUpdate: NoAction, map: "usuario_habilidades_ibfk_2")
+  usuarios             usuarios    @relation(fields: [id_usuario], references: [id_usuario], onUpdate: Restrict, map: "usuario_habilidades_ibfk_1")
+  habilidades          habilidades @relation(fields: [id_habilidad], references: [id_habilidad], onUpdate: Restrict, map: "usuario_habilidades_ibfk_2")
 
   @@index([id_habilidad], map: "id_habilidad")
   @@index([id_usuario], map: "id_usuario")
@@ -144,7 +144,7 @@ model usuario_habilidades {
 model usuarios {
   id_usuario             Int                   @id @default(autoincrement())
   nombre                 String                @db.VarChar(100)
-  apellido               String?               @db.VarChar(100)
+  apellido               String                @db.VarChar(100)
   correo                 String                @unique(map: "correo") @db.VarChar(100)
   contrase_a             String                @map("contraseña") @db.VarChar(255)
   telefono               String?               @db.VarChar(20)
@@ -182,10 +182,11 @@ model vacantes {
   id_municipio         Int?
   fecha_publicacion    DateTime?        @default(now()) @db.DateTime(0)
   conversaciones       conversaciones[]
+  favoritos            favoritos[]
   postulaciones        postulaciones[]
-  perfiles_empresa     perfiles_empresa @relation(fields: [id_perfil_empresa], references: [id_perfil_empresa], onDelete: NoAction, onUpdate: NoAction, map: "vacantes_ibfk_1")
-  categorias           categorias?      @relation(fields: [id_categoria], references: [id_categoria], onDelete: NoAction, onUpdate: NoAction, map: "vacantes_ibfk_2")
-  municipios           municipios?      @relation(fields: [id_municipio], references: [id_municipio], onDelete: NoAction, onUpdate: NoAction, map: "vacantes_ibfk_3")
+  perfiles_empresa     perfiles_empresa @relation(fields: [id_perfil_empresa], references: [id_perfil_empresa], onUpdate: Restrict, map: "vacantes_ibfk_1")
+  categorias           categorias?      @relation(fields: [id_categoria], references: [id_categoria], onDelete: Restrict, onUpdate: Restrict, map: "vacantes_ibfk_2")
+  municipios           municipios?      @relation(fields: [id_municipio], references: [id_municipio], onDelete: Restrict, onUpdate: Restrict, map: "vacantes_ibfk_3")
 
   @@index([id_categoria], map: "id_categoria")
   @@index([id_municipio], map: "id_municipio")
@@ -193,14 +194,14 @@ model vacantes {
 }
 
 model favoritos {
-  id_favorito       Int              @id @default(autoincrement())
-  id_perfil_empresa Int
-  id_usuario        Int
-  fecha_guardado    DateTime?        @default(now()) @db.DateTime(0)
-  perfiles_empresa  perfiles_empresa @relation(fields: [id_perfil_empresa], references: [id_perfil_empresa], onDelete: NoAction, onUpdate: NoAction, map: "favoritos_ibfk_1")
-  usuarios          usuarios         @relation(fields: [id_usuario], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction, map: "favoritos_ibfk_2")
+  id_favorito    Int       @id @default(autoincrement())
+  id_vacante     Int
+  id_usuario     Int
+  fecha_guardado DateTime? @default(now()) @db.DateTime(0)
+  vacantes       vacantes  @relation(fields: [id_vacante], references: [id_vacante], onUpdate: Restrict, map: "favoritos_ibfk_1")
+  usuarios       usuarios  @relation(fields: [id_usuario], references: [id_usuario], onUpdate: Restrict, map: "favoritos_ibfk_2")
 
-  @@unique([id_perfil_empresa, id_usuario], map: "id_perfil_empresa")
+  @@unique([id_vacante, id_usuario], map: "id_vacante")
   @@index([id_usuario], map: "id_usuario")
 }
 
@@ -213,9 +214,8 @@ model perfiles_empresa {
   logo_empresa       String?              @db.VarChar(255)
   verificada         Boolean?             @default(false)
   fecha_creacion     DateTime?            @default(now()) @db.DateTime(0)
-  favoritos          favoritos[]
   notificaciones     notificaciones[]
-  usuarios           usuarios             @relation(fields: [id_usuario], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction, map: "perfiles_empresa_ibfk_1")
+  usuarios           usuarios             @relation(fields: [id_usuario], references: [id_usuario], onUpdate: Restrict, map: "perfiles_empresa_ibfk_1")
   seguidores_empresa seguidores_empresa[]
   vacantes           vacantes[]
 }
@@ -228,9 +228,9 @@ model servicios {
   id_categoria      Int?
   id_municipio      Int?
   fecha_publicacion DateTime?   @default(now()) @db.DateTime(0)
-  usuarios          usuarios    @relation(fields: [id_usuario], references: [id_usuario], onDelete: NoAction, onUpdate: NoAction, map: "servicios_ibfk_1")
-  categorias        categorias? @relation(fields: [id_categoria], references: [id_categoria], onDelete: NoAction, onUpdate: NoAction, map: "servicios_ibfk_2")
-  municipios        municipios? @relation(fields: [id_municipio], references: [id_municipio], onDelete: NoAction, onUpdate: NoAction, map: "servicios_ibfk_3")
+  usuarios          usuarios    @relation(fields: [id_usuario], references: [id_usuario], onUpdate: Restrict, map: "servicios_ibfk_1")
+  categorias        categorias? @relation(fields: [id_categoria], references: [id_categoria], onDelete: Restrict, onUpdate: Restrict, map: "servicios_ibfk_2")
+  municipios        municipios? @relation(fields: [id_municipio], references: [id_municipio], onDelete: Restrict, onUpdate: Restrict, map: "servicios_ibfk_3")
 
   @@index([id_categoria], map: "id_categoria")
   @@index([id_municipio], map: "id_municipio")

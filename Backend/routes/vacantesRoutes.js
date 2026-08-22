@@ -10,6 +10,9 @@ router.post("/", vacantesController.crearVacante);
 // Obtener todas las vacantes
 router.get("/", vacantesController.obtenerVacantes);
 
+// Buscar vacantes por título y filtros
+router.get("/buscar", vacantesController.buscarVacantes);
+
 // Obtener una vacante
 router.get("/:id", vacantesController.obtenerVacante);
 

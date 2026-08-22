@@ -10,6 +10,7 @@ const postulacionesRoutes = require("./routes/postulacionesRoutes");
 const vacantesRoutes = require("./routes/vacantesRoutes");
 const serviciosRoutes = require("./routes/serviciosRoutes");
 const seguirEmpresaRoutes = require("./routes/seguirEmpresaRoutes");
+const favoritosRoutes = require("./routes/favoritosRoutes");
 
 const prisma = new PrismaClient();
 
@@ -26,6 +27,7 @@ app.use("/postulaciones", postulacionesRoutes);
 app.use("/vacantes", vacantesRoutes);
 app.use("/servicios", serviciosRoutes);
 app.use("/seguir-empresa", seguirEmpresaRoutes);
+app.use("/favoritos", favoritosRoutes);
 
 // Ruta principal
 app.get("/", (req, res) => {

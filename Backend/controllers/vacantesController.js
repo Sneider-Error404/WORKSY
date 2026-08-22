@@ -68,6 +68,102 @@ exports.obtenerVacantes = async (req, res) => {
 
 };
 
+
+// Buscar vacantes por texto y filtros
+exports.buscarVacantes = async (req, res) => {
+
+    try {
+
+        const {
+            texto,
+            categoria,
+            municipio,
+            modalidad,
+            tipoEmpleo,
+            primerEmpleo,
+            requiereExperiencia
+        } = req.query;
+
+        const filtros = {};
+
+        console.log("ENTRÓ A BUSCAR VACANTES");
+        console.log("Query recibida:", req.query);
+
+        if (texto) {
+            filtros.OR = [
+                {
+                    titulo: {
+                        contains: texto
+                    }
+                },
+                {
+                    descripcion: {
+                        contains: texto
+                    }
+                }
+            ];
+        }
+
+        if (categoria) {
+            filtros.id_categoria = Number(categoria);
+        }
+
+        if (municipio) {
+            filtros.id_municipio = Number(municipio);
+        }
+
+        if (modalidad) {
+            filtros.modalidad = modalidad;
+        }
+
+        if (tipoEmpleo) {
+            filtros.tipo_empleo = tipoEmpleo;
+        }
+
+        if (primerEmpleo !== undefined) {
+            filtros.acepta_primer_empleo =
+                primerEmpleo === "true";
+        }
+
+        if (requiereExperiencia !== undefined) {
+            filtros.requiere_experiencia =
+                requiereExperiencia === "true";
+        }
+
+        console.log("Filtros enviados a Prisma:", filtros);
+
+        const vacantes = await prisma.vacantes.findMany({
+            where: filtros,
+            orderBy: {
+                fecha_publicacion: "desc"
+            }
+        });
+
+                // Verificar si no se encontraron vacantes
+            if (vacantes.length === 0) {
+                return res.status(200).json({
+                    mensaje: "No se encontraron vacantes que coincidan con la búsqueda",
+                    vacantes: []
+                });
+            }
+
+            // Si se encontraron vacantes
+            res.status(200).json({
+                mensaje: "Vacantes encontradas",
+                vacantes: vacantes
+});
+
+    } catch (error) {
+
+        console.error(error);
+
+        res.status(500).json({
+            error: "Error al buscar vacantes"
+        });
+
+    }
+};
+
 exports.obtenerVacante = async (req, res) => {
 
     const id = Number(req.params.id);
