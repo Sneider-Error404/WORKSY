@@ -15,6 +15,7 @@ import {
   Plus,
   UserRound,
 } from "lucide-react";
+import { Link } from "react-router-dom";
 
 import "./Welcome.css";
 
@@ -153,7 +154,9 @@ export default function Inicio() {
         </div>
 
         <div className="header-icons">
-          <Bell className="icon" size={20} />
+          <Link to="/notificaciones" aria-label="Notificaciones">
+            <Bell className="icon" size={20} />
+          </Link>
           <div className="profile-avatar">
             <UserRound size={20} />
           </div>
