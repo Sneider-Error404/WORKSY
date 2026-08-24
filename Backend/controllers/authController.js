@@ -1,6 +1,8 @@
 const { PrismaClient } = require("@prisma/client");
 const bcrypt = require("bcrypt");
 
+const jwt = require("jsonwebtoken");
+
 const prisma = new PrismaClient();
 
 exports.test = (req, res) => {
@@ -131,8 +133,20 @@ if (!passwordCorrecta) {
     });
 }
 
+const token = jwt.sign(
+    {
+        id_usuario: usuario.id_usuario,
+        correo: usuario.correo
+    },
+    process.env.JWT_SECRET,
+    {
+        expiresIn: "1h"
+    }
+);
+
 return res.status(200).json({
     mensaje: "Inicio de sesión exitoso.",
+    token: token,
     usuario: {
         id_usuario: usuario.id_usuario,
         nombre: usuario.nombre,

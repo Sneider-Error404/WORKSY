@@ -78,7 +78,7 @@ body{
     background: rgba(29,39,72,0.08);
 }
 
-.active{
+.dots .active{
     background:#1d2748 !important;
 }
 
