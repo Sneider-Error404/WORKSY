@@ -4,6 +4,9 @@ import Login from "./pages/login.jsx";
 import Register from "./pages/register.jsx";
 import Inicio from "./pages/inicio.jsx";
 import Notificaciones from "./pages/Notificaciones.jsx";
+import Perfil from "./pages/Perfil.jsx";
+import Chat from "./pages/Chat.jsx";
+import Postulaciones from "./pages/Postulaciones.jsx";
 
 export default function App() {
   return (
@@ -14,6 +17,9 @@ export default function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/inicio" element={<Inicio />} />
         <Route path="/notificaciones" element={<Notificaciones />} />
+        <Route path="/perfil" element={<Perfil />} />
+        <Route path="/chat" element={<Chat />} />
+        <Route path="/postulaciones" element={<Postulaciones />} />
       </Routes>
     </BrowserRouter>
   );

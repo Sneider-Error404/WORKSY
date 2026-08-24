@@ -157,9 +157,9 @@ export default function Inicio() {
           <Link to="/notificaciones" aria-label="Notificaciones">
             <Bell className="icon" size={20} />
           </Link>
-          <div className="profile-avatar">
+          <Link to="/perfil" className="profile-avatar" aria-label="Abrir perfil">
             <UserRound size={20} />
-          </div>
+          </Link>
         </div>
       </div>
 
@@ -267,15 +267,15 @@ export default function Inicio() {
         <div className="nav-item active">
           <House size={20} />
         </div>
-        <div className="nav-item">
+        <Link to="/chat" className="nav-item">
           <MessageCircleMore size={20} />
-        </div>
+        </Link>
         <div className="nav-item">
           <Plus size={20} />
         </div>
-        <div className="nav-item">
+        <Link to="/perfil" className="nav-item" aria-label="Abrir perfil">
           <UserRound size={20} />
-        </div>
+        </Link>
       </div>
     </div>
   );

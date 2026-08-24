@@ -162,7 +162,8 @@ body{
     text-align: left;
 }
 
-.form-group input{
+.form-group input,
+.form-group select{
     padding: 12px 15px;
     border: 1px solid #e0e0e0;
     border-radius: 8px;
@@ -170,6 +171,10 @@ body{
     color: #6f6f6f;
     background: #f9f9f9;
     transition: all 0.3s ease;
+}
+
+.form-group select{
+    cursor: pointer;
 }
 
 .form-group input::placeholder{
@@ -349,16 +354,19 @@ body{
     padding: 12px 0;
     background: none;
     font-size: 14px;
-    color: #1d2748;
+    color: #111827 !important;
+    -webkit-text-fill-color: #111827;
     outline: none;
 }
 
 .search-input::placeholder{
-    color: #bbb;
+    color: #8a8f98;
+    opacity: 1;
 }
 
 .search-input:focus{
-    color: #1d2748;
+    color: #111827 !important;
+    -webkit-text-fill-color: #111827;
 }
 
 .inicio-categories-section{

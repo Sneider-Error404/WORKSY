@@ -1,0 +1,97 @@
+.perfil-page {
+  min-height: 100svh;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 48px 20px 32px;
+  background: #f5f9fe;
+  color: #11161d;
+  font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+}
+
+.perfil-header {
+  position: absolute;
+  top: 20px;
+  left: max(24px, calc(50% - 280px));
+  z-index: 2;
+}
+
+.perfil-back {
+  color: #17212d;
+  display: inline-flex;
+  padding: 4px;
+  transition: transform 160ms ease;
+}
+
+.perfil-back:hover { transform: translateX(-3px); }
+
+.perfil-card {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 650px);  
+  min-height: 620px;
+  padding: 24px 52px 18px;
+  border-radius: 9px;
+  background: #dcecff;
+  box-shadow: 0 16px 36px rgba(72, 111, 153, 0.12);
+  animation: profile-enter 500ms ease both;
+}
+
+.perfil-summary { display: flex; align-items: center; gap: 28px; }
+
+.perfil-avatar {
+  width: 100px;
+  height: 105px;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  flex: 0 0 auto;
+  border-radius: 50% 50% 42% 42%;
+  background: #9fd5a9;
+  color: #1f3441;
+  cursor: pointer;
+}
+
+.perfil-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.perfil-avatar input { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+.avatar-photo-hint { position: absolute; inset: auto 0 0; z-index: 2; padding: 5px 0; background: rgba(17, 31, 42, 0.72); color: #fff; text-align: center; font-size: 8px; opacity: 0; transition: opacity 160ms ease; }
+.perfil-avatar:hover .avatar-photo-hint, .perfil-avatar:focus-within .avatar-photo-hint { opacity: 1; }
+.avatar-hair { position: absolute; top: 7px; width: 46px; height: 30px; border-radius: 50% 50% 35% 35%; background: #20221e; }
+.perfil-avatar svg { margin-bottom: 15px; z-index: 1; }
+.avatar-badge { position: absolute; right: 5px; bottom: 5px; padding: 4px 5px; border: 2px solid #fff; border-radius: 8px; background: #1d2d3f; color: #fff; font-size: 9px; font-weight: 700; }
+
+.perfil-identity { text-align: left; }
+.identity-heading { display: flex; align-items: center; gap: 8px; }
+.perfil-identity h1 { margin: 0; color: #11161d; font-size: 16px; font-weight: 500; letter-spacing: 0; }
+.perfil-identity p { margin-top: 7px; font-size: 9px; line-height: 1.25; color: #1b2735; }
+.icon-action { display: inline-flex; border: 0; padding: 3px; color: #294660; background: transparent; cursor: pointer; }
+
+.profile-stats { display: flex; justify-content: space-between; margin: -1px 0 50px 100px; }
+.profile-stat { width: 100px; height: 4 2px; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 12px; background: #fff; color: #11161d; text-decoration: none; }
+.profile-stat strong { font-size: 16px; line-height: 1; font-weight: 400; }
+.profile-stat span { margin-top: 3px; font-size: 8px; }
+
+.profile-links { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 18px; margin-top: 14px; }
+.profile-link { height: 66px; display: grid; grid-template-columns: 40px 1fr 20px; align-items: center; gap: 8px; padding: 0 18px; border: 0; border-radius: 14px; background: #fff; color: #13191f; text-align: left; font: inherit; font-size: 11px; cursor: pointer; transition: transform 160ms ease, box-shadow 160ms ease; }
+.profile-link:hover { transform: translateY(-2px); box-shadow: 0 6px 14px rgba(64, 96, 132, 0.12); }
+.profile-link-icon { display: flex; justify-content: center; color: #050505; }
+
+.account-switch { width: 164px; height: 22px; display: flex; align-items: center; justify-content: center; gap: 8px; margin: 47px auto 0; border: 0; border-radius: 999px; background: #fff; color: #161b20; font: inherit; font-size: 8px; cursor: pointer; }
+.account-switch:hover { background: #f8fbff; }
+
+.profile-shape { position: absolute; border: 2px solid rgba(153, 183, 215, 0.45); transform: rotate(-27deg); pointer-events: none; }
+.profile-shape-top { width: 250px; height: 130px; top: -70px; left: -42px; }
+.profile-shape-bottom { width: 220px; height: 115px; right: -44px; bottom: -65px; }
+
+@keyframes profile-enter { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+@media (max-width: 480px) {
+  .perfil-page { padding-inline: 14px; }
+  .perfil-card { padding-inline: 24px; }
+  .perfil-summary { gap: 18px; }
+  .profile-stats { margin-left: 76px; }
+}
