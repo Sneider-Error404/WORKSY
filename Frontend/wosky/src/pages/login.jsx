@@ -10,13 +10,46 @@ export default function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [rememberMe, setRememberMe] = useState(false);
+    const [error, setError] = useState("");
+
     const navigate = useNavigate();
 
-    const handleLogin = (e) => {
+    const handleLogin = async (e) => {
         e.preventDefault();
-        console.log("Login:", email, password, rememberMe);
-        // Aquí va la lógica de login
-        navigate("/inicio");
+
+        // Limpiar errores anteriores
+        setError("");
+
+        try {
+            const response = await fetch("http://localhost:3000/auth/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    correo: email,
+                    password: password
+                })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                // Guardar el token recibido del backend
+                localStorage.setItem("token", data.token);
+
+                // Entrar a la página principal
+                navigate("/inicio");
+            } else {
+                // Mostrar el error enviado por el backend
+                setError(data.error || "Error al iniciar sesión.");
+            }
+
+        } catch (error) {
+            console.error("Error al iniciar sesión:", error);
+
+            setError("No se pudo conectar con el servidor.");
+        }
     };
 
     return (
@@ -41,6 +74,7 @@ export default function Login() {
                 <h1>Inicio</h1>
 
                 <form onSubmit={handleLogin} className="login-form">
+
                     <div className="form-group">
                         <input
                             type="email"
@@ -70,16 +104,32 @@ export default function Login() {
                             checked={rememberMe}
                             onChange={(e) => setRememberMe(e.target.checked)}
                         />
-                        <label htmlFor="remember">Recordar contraseña</label>
+
+                        <label htmlFor="remember">
+                            Recordar contraseña
+                        </label>
                     </div>
+
+                    {error && (
+                        <p style={{ color: "red", fontSize: "14px" }}>
+                            {error}
+                        </p>
+                    )}
 
                     <button type="submit" className="login-form">
                         Iniciar
                     </button>
+
                 </form>
 
                 <p className="signup-link">
-                    ¿No tienes cuenta? <a onClick={() => navigate("/register")} style={{ cursor: "pointer" }}>Regístrate</a>
+                    ¿No tienes cuenta?{" "}
+                    <a
+                        onClick={() => navigate("/register")}
+                        style={{ cursor: "pointer" }}
+                    >
+                        Regístrate
+                    </a>
                 </p>
             </div>
         </div>

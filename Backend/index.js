@@ -1,6 +1,7 @@
 require("dotenv").config();
 
 const express = require("express");
+const cors = require("cors");
 const { PrismaClient } = require("@prisma/client");
 
 
@@ -18,10 +19,18 @@ const prisma = new PrismaClient();
 
 const app = express();
 
+
+// Permitir conexión desde el frontend
+app.use(cors({
+  origin: "http://localhost:5173"
+}));
+
+
+// Permitir recibir JSON
 app.use(express.json());
 
 
-// registrar rutas
+// Registrar rutas
 app.use("/auth", authRoutes);
 app.use("/usuarios", usuariosRoutes);
 app.use("/perfil-empresa", perfilEmpresaRoutes);
@@ -31,10 +40,12 @@ app.use("/servicios", serviciosRoutes);
 app.use("/seguir-empresa", seguirEmpresaRoutes);
 app.use("/favoritos", favoritosRoutes);
 
+
 // Ruta principal
 app.get("/", (req, res) => {
   res.send("Backend funcionando correctamente");
 });
+
 
 app.listen(3000, () => {
   console.log("Servidor corriendo en http://localhost:3000");
