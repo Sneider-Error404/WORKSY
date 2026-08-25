@@ -1,0 +1,176 @@
+.company-page {
+  min-height: 100svh;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  padding: 76px 20px 44px;
+  background: #f5f9fe;
+  color: #11161d;
+  font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+}
+
+
+
+.company-header {
+  position: absolute;
+  top: 27px;
+  left: max(36px, calc(50% - 470px));
+  z-index: 2;
+}
+
+.company-back {
+  display: inline-flex;
+  color: #17212d;
+}
+
+.company-panel {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 845px);
+  min-height: 560px;
+  padding: 54px 90px 28px;
+  border: 2px solid #1689e8;
+  background: #dcecff;
+  color: black;
+
+}
+
+.company-panel h1 {
+  margin: 0 0 34px 24px;
+  font-size: 23px;
+  font-weight: 400;
+  color: #11161d;
+}
+
+.company-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 27px;
+  color: #11161d;
+}
+
+.company-form > input,
+.company-form > textarea,
+.logo-field {
+  width: min(100%, 625px);
+  border: 0;
+  border-radius: 7px;
+  background: #fff;
+
+}
+
+.company-form > input {
+  height: 51px;
+  padding: 0 24px;
+  color: #11161d;
+}
+
+.company-form > textarea {
+  height: 155px;
+  padding: 22px 18px;
+  resize: vertical;
+  color: #11161d;
+}
+
+.company-form input::placeholder,
+.company-form textarea::placeholder {
+  color: #8d8d8d;
+  font: 12px "Trebuchet MS", "Segoe UI", sans-serif;
+}
+
+.company-form input:focus,
+.company-form textarea:focus {
+  outline: 2px solid #1689e8;
+  outline-offset: 2px;
+}
+
+.logo-field {
+  min-height: 170px;
+  padding: 14px 28px 16px;
+}
+
+.logo-field > label {
+  display: block;
+  margin-bottom: 13px;
+  font-size: 17px;
+}
+
+.logo-field > input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  color:#11161d
+}
+
+.logo-upload-row {
+  display: flex;
+  align-items: center;
+  gap: 52px;
+}
+
+.logo-upload {
+  width: 250px;
+  height: 51px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  border: 1.5px solid #11161d;
+  border-radius: 7px;
+  cursor: pointer;
+}
+
+.logo-upload img {
+  width: 35px;
+  height: 35px;
+  object-fit: contain;
+}
+
+.logo-help {
+  color: #777;
+  font-size: 12px;
+}
+
+.company-submit {
+  min-width: 205px;
+  padding: 11px 28px;
+  border: 0;
+  border-radius: 22px;
+  background: #ffd13f;
+  color: #11161d;
+  font: inherit;
+  font-size: 17px;
+  cursor: pointer;
+}
+
+.company-submit:hover {
+  filter: brightness(0.97);
+}
+
+@media (max-width: 650px) {
+  .company-page {
+    padding: 72px 14px 28px;
+  }
+
+  .company-panel {
+    padding: 36px 22px 24px;
+  }
+
+  .company-panel h1 {
+    margin-left: 0;
+    font-size: 20px;
+  }
+
+  .logo-upload-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .logo-upload {
+    width: 230px;
+  }
+}

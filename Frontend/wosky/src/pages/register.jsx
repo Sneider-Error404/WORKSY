@@ -7,7 +7,6 @@ import vectorTop from "../assets/Vector 4.svg";
 import vectorBottom from "../assets/Vector 5.svg";
 
 export default function Register() {
-    const [accountType, setAccountType] = useState("");
     const [name, setName] = useState("");
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
@@ -21,7 +20,7 @@ export default function Register() {
             alert("Las contraseñas no coinciden");
             return;
         }
-        console.log("Register:", accountType, name, lastName, email, password);
+        console.log("Register:", name, lastName, email, password);
         navigate("/inicio");
     };
 
@@ -47,20 +46,6 @@ export default function Register() {
                 <h1>Regístrate</h1>
 
                 <form onSubmit={handleRegister} className="login-form">
-                    <div className="form-group">
-                        <label>Tipo de cuenta</label>
-                        <select
-                            id="accountType"
-                            value={accountType}
-                            onChange={(e) => setAccountType(e.target.value)}
-                            required
-                        >
-                            <option value="" disabled>Selecciona una opción</option>
-                            <option value="usuario">Usuario</option>
-                            <option value="empresa">Empresa</option>
-                        </select>
-                    </div>
-
                     <div className="form-group">
                         <label>Nombre</label>
                         <input

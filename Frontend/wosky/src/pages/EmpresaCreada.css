@@ -1,0 +1,138 @@
+.company-created-page {
+  min-height: 100svh;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  padding: 50px 20px 28px;
+  background: #f5f9fe;
+  color: #11161d;
+  font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+}
+
+.company-created-vector {
+  position: absolute;
+  pointer-events: none;
+}
+
+.company-created-vector-top {
+  width: 430px;
+  top: -34px;
+  left: -42px;
+}
+
+.company-created-vector-bottom {
+  width: 430px;
+  right: -26px;
+  bottom: -28px;
+}
+
+.company-created-header {
+  position: absolute;
+  top: 25px;
+  left: max(36px, calc(50% - 470px));
+  z-index: 2;
+}
+
+.company-created-back {
+  display: inline-flex;
+  color: #17212d;
+}
+
+.company-created-panel {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 545px);
+  min-height: 363px;
+  margin-top: 0;
+  padding: 58px 24px 24px;
+  background: #dcecff;
+  text-align: center;
+}
+
+.success-mark {
+  width: 92px;
+  height: 92px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 12px;
+  color: #786622;
+  background: #fff3a6;
+  clip-path: polygon(50% 0%, 63% 13%, 81% 9%, 86% 27%, 100% 39%, 88% 53%, 94% 71%, 76% 78%, 67% 96%, 50% 86%, 34% 100%, 24% 82%, 6% 75%, 12% 57%, 0% 43%, 14% 29%, 12% 10%, 32% 14%);
+}
+
+.success-title {
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.success-subtitle {
+  font-size: 12px;
+  margin-bottom: 24px;
+}
+
+.created-company-card {
+  width: min(100%, 200px);
+  min-height: 83px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 auto 17px;
+  padding: 8px;
+  border-radius: 14px;
+  background: #fff;
+  text-align: left;
+}
+
+.created-company-logo {
+  width: 54px;
+  height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 54px;
+  background: #f4f4f4;
+  color: #1689e8;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.created-company-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.created-company-card strong {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.created-company-card p {
+  font-size: 11px;
+  line-height: 1.15;
+}
+
+.go-company-button {
+  padding: 8px 28px;
+  border: 0;
+  border-radius: 18px;
+  background: #ffd13f;
+  color: #11161d;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+@media (max-width: 480px) {
+  .company-created-page {
+    padding-inline: 14px;
+  }
+
+  .company-created-panel {
+    margin-top: 10px;
+  }
+}
