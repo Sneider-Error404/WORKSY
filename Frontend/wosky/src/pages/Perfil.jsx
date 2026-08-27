@@ -3,6 +3,7 @@ import { ArrowLeft, BriefcaseBusiness, ChevronRight, FileText, GraduationCap, Lo
 import { Link } from "react-router-dom";
 
 import "./Perfil.css";
+import uraccanLogo from "../assets/OIP.webp";
 
 const profileLinks = [
   { label: "Habilidades", icon: GraduationCap },
@@ -37,7 +38,7 @@ export default function Perfil() {
       <section className="perfil-card" aria-labelledby="profile-name">
         <div className="perfil-summary">
           <label className="perfil-avatar" aria-label="Cambiar foto de perfil">
-            {profilePhoto ? <img src={profilePhoto} alt="Foto de perfil de Ligia Morales" /> : <><div className="avatar-hair" /><UserRound size={64} strokeWidth={1.4} /></>}
+            <img src={profilePhoto || uraccanLogo} alt="Logo de URACCAN" />
             <span className="avatar-photo-hint">Cambiar foto</span>
             <span className="avatar-badge">LM</span>
             <input type="file" accept="image/*" onChange={handlePhotoChange} />
@@ -69,7 +70,7 @@ export default function Perfil() {
           ))}
         </div>
 
-        <button className="account-switch" type="button"><LockKeyhole size={17} /><span>Cambiar tipo de cuenta</span></button>
+        <Link to="/cambiar-cuenta" className="account-switch"><LockKeyhole size={17} /><span>Cambiar tipo de cuenta</span></Link>
       </section>
     </main>
   );

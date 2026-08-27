@@ -1,0 +1,114 @@
+.my-company-page {
+  min-height: 100svh;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  padding: 49px 20px 30px;
+  background: #f5f9fe;
+  color: #11161d;
+  font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+}
+h1{
+    color: #11161d;
+}
+
+.my-company-page::before,
+.my-company-page::after {
+  content: "";
+  position: absolute;
+  width: 420px;
+  height: 180px;
+  border: 2px solid rgba(153, 183, 215, .45);
+  transform: rotate(-27deg);
+  pointer-events: none;
+}
+
+.my-company-page::before { top: -130px; left: -65px; }
+.my-company-page::after { right: -70px; bottom: -130px; }
+
+.my-company-header {
+  position: absolute;
+  z-index: 2;
+  top: 23px;
+  left: max(30px, calc(50% - 300px));
+  right: max(30px, calc(50% - 300px));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.my-company-back { position: relative; top: -8px; left: -200px; display: inline-flex; color: #17212d; }
+
+.create-vacancy-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 9px 15px;
+  border: 0;
+  border-radius: 15px;
+  background: #ffd13f;
+  color: #11161d;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.my-company-panel {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 900px);
+  min-height: 610px;
+  padding: 22px 30px 30px;
+  background: #dcecff;
+}
+
+.my-company-summary { display: flex; align-items: center; gap: 16px; }
+
+.company-logo {
+  width: 120px;
+  height: 120px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+  flex: 0 0 120px;
+}
+
+.company-logo i { display: block; background: #f25022; }
+.company-logo i:nth-child(2) { background: #7fce1b; }
+.company-logo i:nth-child(3) { background: #08a9df; }
+.company-logo i:nth-child(4) { background: #ffbd0b; }
+.uploaded-company-logo { object-fit: contain; background: #fff; }
+
+.my-company-identity { align-self: flex-start; padding-top: 5px; }
+.my-company-identity h1 { margin: 0 0 9px; font-size: 15px; font-weight: 400; }
+.my-company-identity p { font-size: 9px; }
+.verified-company { align-self: flex-start; margin: 35px 0 0 auto; padding: 3px 15px; border-radius: 5px; background: #a5dfc0; font-size: 10px; }
+
+.company-stats { display: flex; margin: -30px 0 16px 120px; border-bottom: 1px solid #8b9bab; }
+.company-stats span { width: 100px; display: flex; flex-direction: column; align-items: center; padding: 5px 0; border-right: 1px solid #8b9bab; font-size: 10px; }
+.company-stats span:last-child { border-right: 0; }
+.company-stats strong { margin-bottom: 7px; font-size: 10px; font-weight: 400; }
+
+.about-company { position: relative; width: min(100%, 390px); margin: 0 auto 20px; padding: 19px 22px 15px; border-radius: 14px; background: #fff; }
+.about-company h2 { margin: 0 0 16px; font-size: 13px; font-weight: 400; }
+.about-company p { font-size: 13px; line-height: 1.2; }
+.about-company button, .vacancies-heading button { display: block; margin: 10px 0 0 auto; padding: 0; border: 0; background: transparent; color: #3d77dc; font-size: 8px; cursor: pointer; }
+
+.published-vacancies { width: min(100%, 390px); margin: 0 auto; }
+.vacancies-heading { display: flex; justify-content: space-between; align-items: center; margin: 0 8px 12px; font-size: 13px; }
+.vacancies-heading button { margin: 0; }
+.company-vacancy { width: 100%; min-height: 58px; display: grid; grid-template-columns: 65px 1fr 20px; align-items: center; margin-bottom: 9px; padding: 7px 13px; border: 0; border-radius: 14px; background: #fff; color: #11161d; text-align: left; cursor: pointer; }
+.company-logo-small { width: 38px; height: 38px; gap: 2px; flex-basis: 38px; }
+.company-logo-colorful { display: flex; align-items: center; justify-content: center; background: #fff; color: #f34b25; font-size: 27px; }
+.company-vacancy strong, .company-vacancy small { display: block; }
+.company-vacancy strong { margin-bottom: 7px; font-size: 13px; font-weight: 400; }
+.company-vacancy small { font-size: 11px; }
+
+@media (max-width: 480px) {
+  .my-company-page { padding-inline: 14px; }
+  .my-company-panel { padding-inline: 16px; }
+  .company-logo { width: 105px; height: 105px; flex-basis: 105px; }
+  .company-stats { margin-left: 105px; }
+  .verified-company { padding-inline: 9px; }
+}

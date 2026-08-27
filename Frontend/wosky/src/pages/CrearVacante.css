@@ -1,0 +1,44 @@
+.create-vacancy-page {
+  min-height: 100svh;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 43px 20px 24px;
+  background: #f5f9fe;
+  color: #11161d;
+  font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+}
+
+.create-vacancy-page::before,
+.create-vacancy-page::after { content: ""; position: absolute; width: 420px; height: 180px; border: 2px solid rgba(153, 183, 215, .45); transform: rotate(-27deg); pointer-events: none; }
+.create-vacancy-page::before { top: -130px; left: -65px; }
+.create-vacancy-page::after { right: -70px; bottom: -130px; }
+
+.create-vacancy-header { position: absolute; z-index: 2; top: 22px; left: max(22px, calc(50% - 620px)); }
+.create-vacancy-header a { display: inline-flex; color: #17212d; }
+
+.create-vacancy-form { position: relative; z-index: 1; width: min(100%, 707px); display: grid; grid-template-columns: minmax(0, 707px); justify-content: center; }
+.create-vacancy-panel { width: 100%; min-height: 505px; padding: 45px 205px 12px; background: #dcecff; }
+.create-vacancy-panel.is-hidden { display: none; }
+.create-vacancy-panel h1 { margin: 0 0 20px; color: #11161d; font-size: 17px; font-weight: 400; }
+.create-vacancy-panel label { display: block; margin-bottom: 13px; color: #11161d; font-size: 10px; }
+.create-vacancy-panel label > input,
+.create-vacancy-panel label > textarea,
+.create-vacancy-panel label > select { width: 100%; height: 24px; display: block; margin-top: 5px; padding: 4px 8px; border: 0; border-radius: 5px; background: #fff; color: #11161d; font: 10px "Trebuchet MS", "Segoe UI", sans-serif; box-shadow: 0 2px 3px rgba(50, 75, 100, .16); }
+.create-vacancy-panel label > textarea { height: 24px; resize: vertical; }
+.create-vacancy-panel fieldset { display: flex; align-items: center; gap: 8px; margin: 0 0 13px; padding: 0; border: 0; color: #11161d; font-size: 10px; }
+.create-vacancy-panel legend { float: left; width: 168px; }
+.create-vacancy-panel fieldset label { display: flex; align-items: center; gap: 4px; margin: 0; }
+.create-vacancy-panel fieldset input { accent-color: #1689e8; }
+.vacancy-actions { display: flex; justify-content: flex-end; gap: 12px; margin-top: 20px; }
+.create-vacancy-panel > button { display: block; margin: 20px 0 0 auto; }
+.create-vacancy-panel button { padding: 6px 24px; border: 0; border-radius: 5px; background: #ffbf00; color: #11161d; font: 14px "Trebuchet MS", "Segoe UI", sans-serif; cursor: pointer; }
+
+@media (max-width: 480px) {
+  .create-vacancy-page { padding: 65px 14px 25px; }
+  .create-vacancy-form { grid-template-columns: 1fr; gap: 18px; }
+  .create-vacancy-panel { padding: 28px 25px 18px; }
+  .create-vacancy-panel.is-hidden { display: none; }
+}

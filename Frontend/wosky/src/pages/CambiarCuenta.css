@@ -1,0 +1,154 @@
+.change-account-page {
+  min-height: 100svh;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  padding: 56px 20px 28px;
+  background: #f5f9fe;
+  color: #11161d;
+  font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+}
+
+.change-account-header {
+  position: absolute;
+  top: 26px;
+  left: max(28px, calc(50% - 360px));
+  z-index: 2;
+}
+
+.change-account-back {
+  display: inline-flex;
+  padding: 3px;
+  color: #17212d;
+}
+
+.change-account-decoration {
+  position: absolute;
+  z-index: 0;
+  top: 42%;
+  left: calc(50% + 250px);
+  width: 170px;
+  opacity: 0.38;
+  pointer-events: none;
+}
+
+.change-account-content {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 700px);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  padding-top: 2px;
+}
+
+.change-account-intro {
+  width: min(100%, 550px);
+  margin: 0 auto 22px;
+  font-size: 14px;
+  line-height: 1.15;
+}
+
+.account-option,
+.account-info {
+  width: min(100%, 446px);
+  min-height: 105px;
+  margin: 0 auto 27px;
+  border: 1px solid #e7b72b;
+  border-radius: 11px;
+  background: #dcecff;
+}
+
+.account-option {
+  display: flex;
+  align-items: center;
+  gap: 26px;
+  padding: 15px 24px;
+  color: #11161d;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+}
+
+.account-option-icon {
+  flex: 0 0 64px;
+  color: #050505;
+}
+
+.account-option-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  font-size: 14px;
+}
+
+.account-option-copy strong {
+  font-size: 15px;
+  font-weight: 400;
+}
+
+.account-info {
+  display: flex;
+  align-items: center;
+  gap: 27px;
+  padding: 16px 30px;
+}
+
+.account-info svg {
+  flex: 0 0 54px;
+  color: #050505;
+}
+
+.account-info p {
+  max-width: 300px;
+  font-size: 14px;
+  line-height: 1.15;
+}
+
+.change-account-continue {
+  align-self: center;
+  min-width: 168px;
+  margin-top: 0;
+  padding: 14px 30px;
+  border: 0;
+  border-radius: 17px;
+  background: #ffd13f;
+  color: #11161d;
+  font: inherit;
+  font-size: 17px;
+  cursor: pointer;
+}
+
+.change-account-continue:hover,
+.account-option:hover {
+  filter: brightness(0.98);
+}
+
+@media (max-width: 480px) {
+  .change-account-page {
+    padding-inline: 14px;
+  }
+
+  .account-option,
+  .account-info {
+    width: 100%;
+  }
+
+  .account-option {
+    gap: 18px;
+    padding-inline: 18px;
+  }
+
+  .account-info {
+    gap: 18px;
+    padding-inline: 20px;
+  }
+
+  .change-account-decoration {
+    top: 39%;
+    left: auto;
+    right: -28px;
+    width: 145px;
+  }
+}
