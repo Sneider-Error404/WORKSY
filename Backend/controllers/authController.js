@@ -1,6 +1,5 @@
 const { PrismaClient } = require("@prisma/client");
 const bcrypt = require("bcrypt");
-
 const jwt = require("jsonwebtoken");
 
 const prisma = new PrismaClient();
@@ -12,19 +11,8 @@ exports.test = (req, res) => {
 };
 
 exports.register = async (req, res) => {
-
-    res.json({
-        mensaje: "Ruta de registro funcionando correctamente."
-    });
-
-};
-
-exports.register = async (req, res) => {
-
     try {
-
         const {
-            tipoCuenta,
             nombre,
             apellido,
             correo,
@@ -33,7 +21,6 @@ exports.register = async (req, res) => {
         } = req.body;
 
         if (
-            !tipoCuenta ||
             !nombre ||
             !correo ||
             !password ||
@@ -78,91 +65,83 @@ exports.register = async (req, res) => {
             usuario: {
                 id_usuario: nuevoUsuario.id_usuario,
                 nombre: nuevoUsuario.nombre,
+                apellido: nuevoUsuario.apellido,
                 correo: nuevoUsuario.correo
             }
         });
 
     } catch (error) {
-
         console.error(error);
 
         return res.status(500).json({
             error: "Ocurrió un error al registrar el usuario."
         });
-
     }
-
 };
 
 exports.login = async (req, res) => {
-
     try {
+        const {
+            correo,
+            password
+        } = req.body;
 
-        
-const {
-    correo,
-    password
-} = req.body;
+        if (!correo || !password) {
+            return res.status(400).json({
+                error: "Debe ingresar el correo y la contraseña."
+            });
+        }
 
-if (!correo || !password) {
-    return res.status(400).json({
-        error: "Debe ingresar el correo y la contraseña."
-    });
-}
+        const usuario = await prisma.usuarios.findUnique({
+            where: {
+                correo: correo
+            }
+        });
 
-const usuario = await prisma.usuarios.findUnique({
-    where: {
-        correo: correo
-    }
-});
+        if (!usuario) {
+            return res.status(404).json({
+                error: "No existe una cuenta con ese correo."
+            });
+        }
 
-if (!usuario) {
-    return res.status(404).json({
-        error: "No existe una cuenta con ese correo."
-    });
-}
+        const passwordCorrecta = await bcrypt.compare(
+            password,
+            usuario.contrase_a
+        );
 
-const passwordCorrecta = await bcrypt.compare(
-    password,
-    usuario.contrase_a
-);
+        if (!passwordCorrecta) {
+            return res.status(401).json({
+                error: "Contraseña incorrecta."
+            });
+        }
 
-if (!passwordCorrecta) {
-    return res.status(401).json({
-        error: "Contraseña incorrecta."
-    });
-}
+        const token = jwt.sign(
+            {
+                id_usuario: usuario.id_usuario,
+                correo: usuario.correo
+            },
+            process.env.JWT_SECRET,
+            {
+                expiresIn: "1h"
+            }
+        );
 
-const token = jwt.sign(
-    {
-        id_usuario: usuario.id_usuario,
-        correo: usuario.correo
-    },
-    process.env.JWT_SECRET,
-    {
-        expiresIn: "1h"
-    }
-);
-
-return res.status(200).json({
-    mensaje: "Inicio de sesión exitoso.",
-    token: token,
-    usuario: {
-        id_usuario: usuario.id_usuario,
-        nombre: usuario.nombre,
-        apellido: usuario.apellido,
-        correo: usuario.correo
-    }
-});
+        return res.status(200).json({
+            mensaje: "Inicio de sesión exitoso.",
+            token: token,
+            usuario: {
+                id_usuario: usuario.id_usuario,
+                nombre: usuario.nombre,
+                apellido: usuario.apellido,
+                correo: usuario.correo
+            }
+        });
 
     } catch (error) {
-
         console.error(error);
 
         return res.status(500).json({
             error: "Ocurrió un error al iniciar sesión."
         });
-
     }
-
 };

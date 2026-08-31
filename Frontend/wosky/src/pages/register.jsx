@@ -15,24 +15,41 @@ export default function Register() {
 
     const navigate = useNavigate();
 
-    const handleRegister = (e) => {
-        e.preventDefault();
+const handleRegister = async (e) => {
+    e.preventDefault();
 
-        if (password !== confirmPassword) {
-            alert("Las contraseñas no coinciden");
-            return;
-        }
+    if (password !== confirmPassword) {
+        alert("Las contraseñas no coinciden");
+        return;
+    }
 
-        console.log(
-            "Register:",
-            name,
-            lastName,
-            email,
-            password
-        );
+    try {
+        const response = await fetch("http://localhost:3000/auth/register", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                nombre: name,
+                apellido: lastName,
+                correo: email,
+                password: password,
+                confirmPassword: confirmPassword
+            })
+        });
 
-        navigate("/inicio");
-    };
+        const data = await response.json();
+
+if (response.ok) {
+    navigate("/login");
+} else {
+    console.log(data);
+}
+
+    } catch (error) {
+        console.error("Error al registrar usuario:", error);
+    }
+};
 
     return (
         <div className="welcome login-page">

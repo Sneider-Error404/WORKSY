@@ -71,7 +71,7 @@
 .icon-action { display: inline-flex; border: 0; padding: 3px; color: #294660; background: transparent; cursor: pointer; }
 
 .profile-stats { display: flex; justify-content: space-between; margin: -1px 0 50px 100px; }
-.profile-stat { width: 100px; height: 4 2px; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 12px; background: #fff; color: #11161d; text-decoration: none; }
+.profile-stat { width: 100px; height: 42px; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 12px; background: #fff; color: #11161d; text-decoration: none; }
 .profile-stat strong { font-size: 16px; line-height: 1; font-weight: 400; }
 .profile-stat span { margin-top: 3px; font-size: 8px; }
 
@@ -94,4 +94,99 @@
   .perfil-card { padding-inline: 24px; }
   .perfil-summary { gap: 18px; }
   .profile-stats { margin-left: 76px; }
+}
+
+.perfil-error {
+  margin-bottom: 14px;
+  color: #b42318;
+  text-align: center;
+  font-size: 11px;
+}
+
+.perfil-edit-form {
+  width: 100%;
+}
+
+.perfil-edit-form h2 {
+  margin: 0 0 22px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.perfil-edit-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.perfil-edit-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 10px;
+}
+
+.perfil-edit-form input,
+.perfil-edit-form textarea {
+  border: 1px solid #c5d7e9;
+  border-radius: 9px;
+  padding: 10px;
+  background: #fff;
+  color: #11161d;
+  font: inherit;
+  outline: none;
+}
+
+.perfil-edit-form input:focus,
+.perfil-edit-form textarea:focus {
+  border-color: #668eb6;
+}
+
+.perfil-description {
+  margin-top: 16px;
+}
+
+.perfil-edit-form textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.primer-empleo {
+  margin-top: 14px;
+  flex-direction: row !important;
+  align-items: center;
+}
+
+.primer-empleo input {
+  width: auto;
+}
+
+.perfil-edit-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.perfil-edit-actions button {
+  border: 0;
+  border-radius: 999px;
+  padding: 9px 18px;
+  background: #fff;
+  color: #17212d;
+  font: inherit;
+  font-size: 10px;
+  cursor: pointer;
+}
+
+.perfil-edit-actions button:last-child {
+  background: #17212d;
+  color: #fff;
+}
+
+@media (max-width: 480px) {
+  .perfil-edit-grid {
+    grid-template-columns: 1fr;
+  }
 }
