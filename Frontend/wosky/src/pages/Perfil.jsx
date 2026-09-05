@@ -27,6 +27,9 @@ export default function Perfil() {
   const [error, setError] = useState("");
   const [editando, setEditando] = useState(false);
 
+  // Indica si el usuario también posee un perfil de empresa
+  const [tieneEmpresa, setTieneEmpresa] = useState(false);
+
   const [formulario, setFormulario] = useState({
     nombre: "",
     apellido: "",
@@ -38,6 +41,7 @@ export default function Perfil() {
     primer_empleo: true,
   });
 
+  // Obtener información del perfil del usuario
   useEffect(() => {
     const obtenerPerfil = async () => {
       try {
@@ -87,6 +91,47 @@ export default function Perfil() {
     obtenerPerfil();
   }, []);
 
+  // Verificar si el usuario tiene un perfil de empresa
+  useEffect(() => {
+    const verificarEmpresa = async () => {
+      try {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+          setTieneEmpresa(false);
+          return;
+        }
+
+        const response = await fetch(
+          "http://localhost:3000/perfil-empresa/mio",
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (response.ok) {
+          setTieneEmpresa(true);
+        } else {
+          setTieneEmpresa(false);
+        }
+
+      } catch (error) {
+        console.error(
+          "Error al verificar perfil de empresa:",
+          error
+        );
+
+        setTieneEmpresa(false);
+      }
+    };
+
+    verificarEmpresa();
+  }, []);
+
+  // Liberar la URL temporal de la foto
   useEffect(() => {
     return () => {
       if (profilePhoto) {
@@ -99,7 +144,9 @@ export default function Perfil() {
     const selectedPhoto = event.target.files?.[0];
 
     if (selectedPhoto) {
-      setProfilePhoto(URL.createObjectURL(selectedPhoto));
+      setProfilePhoto(
+        URL.createObjectURL(selectedPhoto)
+      );
     }
   };
 
@@ -133,7 +180,10 @@ export default function Perfil() {
       const data = await response.json();
 
       if (!response.ok) {
-        setError(data.error || "No se pudo actualizar el perfil.");
+        setError(
+          data.error ||
+          "No se pudo actualizar el perfil."
+        );
         return;
       }
 
@@ -142,18 +192,36 @@ export default function Perfil() {
       setError("");
 
     } catch (error) {
-      console.error("Error al actualizar perfil:", error);
-      setError("No se pudo conectar con el servidor.");
+      console.error(
+        "Error al actualizar perfil:",
+        error
+      );
+
+      setError(
+        "No se pudo conectar con el servidor."
+      );
     }
   };
 
   const obtenerIniciales = () => {
     if (!usuario) return "";
 
-    const inicialNombre = usuario.nombre?.charAt(0) || "";
-    const inicialApellido = usuario.apellido?.charAt(0) || "";
+    const inicialNombre =
+      usuario.nombre?.charAt(0) || "";
+
+    const inicialApellido =
+      usuario.apellido?.charAt(0) || "";
 
     return `${inicialNombre}${inicialApellido}`.toUpperCase();
+  };
+
+  // Evita mostrar "null" cuando el usuario no tiene apellido
+  const obtenerNombreCompleto = () => {
+    if (!usuario) return "Cargando...";
+
+    return `${usuario.nombre || ""} ${
+      usuario.apellido || ""
+    }`.trim();
   };
 
   return (
@@ -172,6 +240,7 @@ export default function Perfil() {
       </header>
 
       <section className="perfil-card">
+
         {error && (
           <p className="perfil-error">
             {error}
@@ -181,6 +250,7 @@ export default function Perfil() {
         {!editando ? (
           <>
             <div className="perfil-summary">
+
               <label
                 className="perfil-avatar"
                 aria-label="Cambiar foto de perfil"
@@ -210,11 +280,11 @@ export default function Perfil() {
               </label>
 
               <div className="perfil-identity">
+
                 <div className="identity-heading">
+
                   <h1>
-                    {usuario
-                      ? `${usuario.nombre} ${usuario.apellido}`
-                      : "Cargando..."}
+                    {obtenerNombreCompleto()}
                   </h1>
 
                   <button
@@ -226,19 +296,23 @@ export default function Perfil() {
                   >
                     <Pencil size={15} />
                   </button>
+
                 </div>
-
-                <p>
-                  {usuario?.carrera || "Carrera no especificada"}
-                </p>
-
-                <p>
-                  {usuario?.universidad || "Universidad no especificada"}
-                </p>
+                {usuario?.carrera && (
+                    <p>
+                      <strong>Carrera:</strong> {usuario.carrera}
+                      </p>
+                    )}
+                    {usuario?.universidad && (
+                      <p>
+                        <strong>Universidad:</strong> {usuario.universidad}
+                        </p>
+                      )}
               </div>
             </div>
 
             <div className="profile-stats">
+
               <Link
                 to="/postulaciones"
                 className="profile-stat"
@@ -256,45 +330,68 @@ export default function Perfil() {
                 <strong>5</strong>
                 <span>Servicios</span>
               </div>
+
             </div>
 
             <div className="profile-links">
-              {profileLinks.map(({ label, icon: Icon }) => (
-                <button
-                  className="profile-link"
-                  type="button"
-                  key={label}
-                >
-                  <span className="profile-link-icon">
-                    <Icon size={28} strokeWidth={2.2} />
-                  </span>
 
-                  <span>{label}</span>
+              {profileLinks.map(
+                ({ label, icon: Icon }) => (
+                  <button
+                    className="profile-link"
+                    type="button"
+                    key={label}
+                  >
+                    <span className="profile-link-icon">
+                      <Icon
+                        size={28}
+                        strokeWidth={2.2}
+                      />
+                    </span>
 
-                  <ChevronRight
-                    size={20}
-                    strokeWidth={1.8}
-                  />
-                </button>
-              ))}
+                    <span>{label}</span>
+
+                    <ChevronRight
+                      size={20}
+                      strokeWidth={1.8}
+                    />
+                  </button>
+                )
+              )}
+
             </div>
 
-            <Link
-              to="/cambiar-cuenta"
-              className="account-switch"
-            >
-              <LockKeyhole size={17} />
-              <span>Cambiar tipo de cuenta</span>
-            </Link>
+            {/* Acceso empresarial */}
+            {tieneEmpresa ? (
+              <Link
+                to="/mi-empresa"
+                className="account-switch"
+              >
+                <BriefcaseBusiness size={17} />
+                <span>Mi Empresa</span>
+              </Link>
+            ) : (
+              <Link
+                to="/cambiar-cuenta"
+                className="account-switch"
+              >
+                <LockKeyhole size={17} />
+                <span>Crear perfil de empresa</span>
+              </Link>
+            )}
+
           </>
         ) : (
+
           <form
             className="perfil-edit-form"
             onSubmit={guardarPerfil}
           >
+
             <h2>Editar perfil</h2>
 
             <div className="perfil-edit-grid">
+
               <label>
                 Nombre
                 <input
@@ -311,7 +408,6 @@ export default function Perfil() {
                   name="apellido"
                   value={formulario.apellido}
                   onChange={handleChange}
-                  required
                 />
               </label>
 
@@ -346,17 +442,23 @@ export default function Perfil() {
                 Disponibilidad
                 <input
                   name="disponibilidad_laboral"
-                  value={formulario.disponibilidad_laboral}
+                  value={
+                    formulario.disponibilidad_laboral
+                  }
                   onChange={handleChange}
                 />
               </label>
+
             </div>
 
             <label className="perfil-description">
               Sobre mí
+
               <textarea
                 name="descripcion_personal"
-                value={formulario.descripcion_personal}
+                value={
+                  formulario.descripcion_personal
+                }
                 onChange={handleChange}
               />
             </label>
@@ -368,13 +470,17 @@ export default function Perfil() {
                 checked={formulario.primer_empleo}
                 onChange={handleChange}
               />
+
               Busco mi primer empleo
             </label>
 
             <div className="perfil-edit-actions">
+
               <button
                 type="button"
-                onClick={() => setEditando(false)}
+                onClick={() =>
+                  setEditando(false)
+                }
               >
                 Cancelar
               </button>
@@ -382,9 +488,12 @@ export default function Perfil() {
               <button type="submit">
                 Guardar cambios
               </button>
+
             </div>
+
           </form>
         )}
+
       </section>
     </main>
   );

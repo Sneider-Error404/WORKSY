@@ -4,16 +4,34 @@ const router = express.Router();
 
 const perfilEmpresaController = require("../controllers/perfilEmpresaController");
 
-// crear un perfil de empresa
-router.post("/", perfilEmpresaController.crearPerfilEmpresa);
+const verificarToken = require("../middlewares/authMiddleware");
 
-// obtener un perfil de empresa
-router.get("/:id", perfilEmpresaController.obtenerPerfilEmpresa);
+// Crear mi perfil de empresa
+router.post(
+    "/",
+    verificarToken,
+    perfilEmpresaController.crearPerfilEmpresa
+);
 
-// actualizar un perfil de empresa
-router.put("/:id", perfilEmpresaController.actualizarPerfilEmpresa);
+// Obtener mi perfil de empresa
+router.get(
+    "/mio",
+    verificarToken,
+    perfilEmpresaController.obtenerPerfilEmpresa
+);
 
-// eliminar perfil de empresa
-router.delete("/:id", perfilEmpresaController.eliminarPerfilEmpresa);
+// Actualizar mi perfil de empresa
+router.put(
+    "/mio",
+    verificarToken,
+    perfilEmpresaController.actualizarPerfilEmpresa
+);
+
+// Eliminar mi perfil de empresa
+router.delete(
+    "/mio",
+    verificarToken,
+    perfilEmpresaController.eliminarPerfilEmpresa
+);
 
 module.exports = router;

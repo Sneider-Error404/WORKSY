@@ -2,12 +2,11 @@ const { PrismaClient } = require("@prisma/client");
 
 const prisma = new PrismaClient();
 
-exports.crearVacante = async (req, res) => {
 
-    try{
-        
+// Crear una vacante
+exports.crearVacante = async (req, res) => {
+    try {
         const {
-            id_perfil_empresa,
             titulo,
             descripcion,
             salario,
@@ -19,9 +18,21 @@ exports.crearVacante = async (req, res) => {
             id_municipio
         } = req.body;
 
+        const perfilEmpresa = await prisma.perfiles_empresa.findUnique({
+            where: {
+                id_usuario: req.usuario.id_usuario
+            }
+        });
+
+        if (!perfilEmpresa) {
+            return res.status(403).json({
+                error: "Debes tener un perfil de empresa para crear vacantes."
+            });
+        }
+
         const vacante = await prisma.vacantes.create({
             data: {
-                id_perfil_empresa,
+                id_perfil_empresa: perfilEmpresa.id_perfil_empresa,
                 titulo,
                 descripcion,
                 salario,
@@ -37,43 +48,64 @@ exports.crearVacante = async (req, res) => {
         res.status(201).json(vacante);
 
     } catch (error) {
+        console.error(error);
 
-    console.error(error);
-
-    res.status(500).json({
-        error: "Error al crear la vacante"
-    });
-
+        res.status(500).json({
+            error: "Error al crear la vacante"
+        });
     }
 };
 
-// Obtener todas las vacantes
+
+// Obtener todas las vacantes activas
 exports.obtenerVacantes = async (req, res) => {
-
     try {
+        const vacantes = await prisma.vacantes.findMany({
+            where: {
+                estado: "activa"
+            },
 
-        const vacantes = await prisma.vacantes.findMany();
+            include: {
+                perfiles_empresa: {
+                    select: {
+                        nombre_empresa: true,
+                        logo_empresa: true
+                    }
+                },
 
-        res.json(vacantes);
+                categorias: {
+                    select: {
+                        nombre_categoria: true
+                    }
+                },
+
+                municipios: {
+                    select: {
+                        nombre_municipio: true
+                    }
+                }
+            },
+
+            orderBy: {
+                fecha_publicacion: "desc"
+            }
+        });
+
+        res.status(200).json(vacantes);
 
     } catch (error) {
-
         console.error(error);
 
         res.status(500).json({
             error: "Error al obtener las vacantes"
         });
-
     }
-
 };
 
 
 // Buscar vacantes por texto y filtros
 exports.buscarVacantes = async (req, res) => {
-
     try {
-
         const {
             texto,
             categoria,
@@ -84,10 +116,9 @@ exports.buscarVacantes = async (req, res) => {
             requiereExperiencia
         } = req.query;
 
-        const filtros = {};
-
-        console.log("ENTRÓ A BUSCAR VACANTES");
-        console.log("Query recibida:", req.query);
+        const filtros = {
+            estado: "activa"
+        };
 
         if (texto) {
             filtros.OR = [
@@ -130,69 +161,197 @@ exports.buscarVacantes = async (req, res) => {
                 requiereExperiencia === "true";
         }
 
-        console.log("Filtros enviados a Prisma:", filtros);
-
         const vacantes = await prisma.vacantes.findMany({
             where: filtros,
+
+            include: {
+                perfiles_empresa: {
+                    select: {
+                        nombre_empresa: true,
+                        logo_empresa: true
+                    }
+                },
+
+                categorias: {
+                    select: {
+                        nombre_categoria: true
+                    }
+                },
+
+                municipios: {
+                    select: {
+                        nombre_municipio: true
+                    }
+                }
+            },
+
             orderBy: {
                 fecha_publicacion: "desc"
             }
         });
 
-                // Verificar si no se encontraron vacantes
-            if (vacantes.length === 0) {
-                return res.status(200).json({
-                    mensaje: "No se encontraron vacantes que coincidan con la búsqueda",
-                    vacantes: []
-                });
-            }
+        if (vacantes.length === 0) {
+            return res.status(200).json({
+                mensaje: "No se encontraron vacantes que coincidan con la búsqueda",
+                vacantes: []
+            });
+        }
 
-            // Si se encontraron vacantes
-            res.status(200).json({
-                mensaje: "Vacantes encontradas",
-                vacantes: vacantes
-});
+        res.status(200).json({
+            mensaje: "Vacantes encontradas",
+            vacantes: vacantes
+        });
 
     } catch (error) {
-
         console.error(error);
 
         res.status(500).json({
             error: "Error al buscar vacantes"
         });
-
     }
 };
 
-exports.obtenerVacante = async (req, res) => {
 
+// Obtener una vacante por ID
+exports.obtenerVacante = async (req, res) => {
     const id = Number(req.params.id);
 
-    try { const vacante = await prisma.vacantes.findUnique({
-        where: {
-            id_vacante: id
-        }
-    });
+    try {
+        const vacante = await prisma.vacantes.findUnique({
+            where: {
+                id_vacante: id
+            },
 
-    if (!vacante) {
-        return res.status(404).json({
-            error: "Vacante no encontrada"
+            include: {
+                perfiles_empresa: {
+                    select: {
+                        nombre_empresa: true,
+                        logo_empresa: true
+                    }
+                },
+
+                categorias: {
+                    select: {
+                        nombre_categoria: true
+                    }
+                },
+
+                municipios: {
+                    select: {
+                        nombre_municipio: true
+                    }
+                }
+            }
         });
-    }
 
-        res.json(vacante);
+        if (!vacante) {
+            return res.status(404).json({
+                error: "Vacante no encontrada"
+            });
+        }
+
+        res.status(200).json(vacante);
 
     } catch (error) {
-         res.status(500).json({error: "Error al obtener la vacante"});
+        console.error(error);
+
+        res.status(500).json({
+            error: "Error al obtener la vacante"
+        });
     }
 };
 
+
+// Obtener las vacantes de mi empresa
+exports.obtenerMisVacantes = async (req, res) => {
+    try {
+        const perfilEmpresa = await prisma.perfiles_empresa.findUnique({
+            where: {
+                id_usuario: req.usuario.id_usuario
+            }
+        });
+
+        if (!perfilEmpresa) {
+            return res.status(403).json({
+                error: "Debes tener un perfil de empresa para consultar tus vacantes."
+            });
+        }
+
+        const vacantes = await prisma.vacantes.findMany({
+            where: {
+                id_perfil_empresa: perfilEmpresa.id_perfil_empresa
+            },
+
+            include: {
+                categorias: {
+                    select: {
+                        nombre_categoria: true
+                    }
+                },
+
+                municipios: {
+                    select: {
+                        nombre_municipio: true
+                    }
+                }
+            },
+
+            orderBy: {
+                fecha_publicacion: "desc"
+            }
+        });
+
+        res.status(200).json(vacantes);
+
+    } catch (error) {
+        console.error(error);
+
+        res.status(500).json({
+            error: "Error al obtener las vacantes de la empresa"
+        });
+    }
+};
+
+
+// Actualizar una vacante
 exports.actualizarVacante = async (req, res) => {
     const id = Number(req.params.id);
 
     try {
-       const {
-            id_perfil_empresa,
+        const perfilEmpresa = await prisma.perfiles_empresa.findUnique({
+            where: {
+                id_usuario: req.usuario.id_usuario
+            }
+        });
+
+        if (!perfilEmpresa) {
+            return res.status(403).json({
+                error: "Debes tener un perfil de empresa para actualizar vacantes."
+            });
+        }
+
+        const vacanteExistente = await prisma.vacantes.findUnique({
+            where: {
+                id_vacante: id
+            }
+        });
+
+        if (!vacanteExistente) {
+            return res.status(404).json({
+                error: "Vacante no encontrada."
+            });
+        }
+
+        if (
+            vacanteExistente.id_perfil_empresa !==
+            perfilEmpresa.id_perfil_empresa
+        ) {
+            return res.status(403).json({
+                error: "No tienes permiso para modificar esta vacante."
+            });
+        }
+
+        const {
             titulo,
             descripcion,
             salario,
@@ -208,8 +367,8 @@ exports.actualizarVacante = async (req, res) => {
             where: {
                 id_vacante: id
             },
+
             data: {
-                id_perfil_empresa,
                 titulo,
                 descripcion,
                 salario,
@@ -222,33 +381,71 @@ exports.actualizarVacante = async (req, res) => {
             }
         });
 
-        res.json(vacante);
+        res.status(200).json(vacante);
 
     } catch (error) {
-
         console.error(error);
 
-        res.status(500).json({error: "Error al actualizar la vacante"});
+        res.status(500).json({
+            error: "Error al actualizar la vacante"
+        });
     }
 };
 
+
+// Eliminar una vacante
 exports.eliminarVacante = async (req, res) => {
-    
     const id = Number(req.params.id);
 
     try {
-        
-        await prisma.vacantes.delete({
-        where: {
-            id_vacante: id
-        }
-        
-    });
+        const perfilEmpresa = await prisma.perfiles_empresa.findUnique({
+            where: {
+                id_usuario: req.usuario.id_usuario
+            }
+        });
 
-    res.json({ message: "Vacante eliminada correctamente" });
+        if (!perfilEmpresa) {
+            return res.status(403).json({
+                error: "Debes tener un perfil de empresa para eliminar vacantes."
+            });
+        }
+
+        const vacanteExistente = await prisma.vacantes.findUnique({
+            where: {
+                id_vacante: id
+            }
+        });
+
+        if (!vacanteExistente) {
+            return res.status(404).json({
+                error: "Vacante no encontrada."
+            });
+        }
+
+        if (
+            vacanteExistente.id_perfil_empresa !==
+            perfilEmpresa.id_perfil_empresa
+        ) {
+            return res.status(403).json({
+                error: "No tienes permiso para eliminar esta vacante."
+            });
+        }
+
+        await prisma.vacantes.delete({
+            where: {
+                id_vacante: id
+            }
+        });
+
+        res.status(200).json({
+            message: "Vacante eliminada correctamente"
+        });
 
     } catch (error) {
         console.error(error);
-        res.status(500).json({error: "Error al eliminar la vacante"});
+
+        res.status(500).json({
+            error: "Error al eliminar la vacante"
+        });
     }
 };

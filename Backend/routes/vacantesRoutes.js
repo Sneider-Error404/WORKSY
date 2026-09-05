@@ -4,22 +4,52 @@ const router = express.Router();
 
 const vacantesController = require("../controllers/vacantesController");
 
+const verificarToken = require("../middlewares/authMiddleware");
+
 // Crear una vacante
-router.post("/", vacantesController.crearVacante);
+router.post(
+    "/",
+    verificarToken,
+    vacantesController.crearVacante
+);
 
 // Obtener todas las vacantes
-router.get("/", vacantesController.obtenerVacantes);
+router.get(
+    "/",
+    vacantesController.obtenerVacantes
+);
 
 // Buscar vacantes por título y filtros
-router.get("/buscar", vacantesController.buscarVacantes);
+router.get(
+    "/buscar",
+    vacantesController.buscarVacantes
+);
+
+// Obtener las vacantes de mi empresa
+router.get(
+    "/mias",
+    verificarToken,
+    vacantesController.obtenerMisVacantes
+);
 
 // Obtener una vacante
-router.get("/:id", vacantesController.obtenerVacante);
+router.get(
+    "/:id",
+    vacantesController.obtenerVacante
+);
 
 // Actualizar una vacante
-router.put("/:id", vacantesController.actualizarVacante);
+router.put(
+    "/:id",
+    verificarToken,
+    vacantesController.actualizarVacante
+);
 
 // Eliminar una vacante
-router.delete("/:id", vacantesController.eliminarVacante);
+router.delete(
+    "/:id",
+    verificarToken,
+    vacantesController.eliminarVacante
+);
 
 module.exports = router;

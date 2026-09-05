@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Stethoscope,
   Zap,
@@ -26,89 +26,86 @@ export default function Inicio() {
   const [searchQuery, setSearchQuery] = useState("");
   const [likedItems, setLikedItems] = useState({});
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [vacantes, setVacantes] = useState([]);
+  const [error, setError] = useState("");
+  const [cargando, setCargando] = useState(true);
 
   const categories = [
-    { icon: <Stethoscope size={34} strokeWidth={2} />, label: "Doctor", value: "doctor" },
-    { icon: <Zap size={34} strokeWidth={2} />, label: "Electricistas", value: "electricistas" },
+    {
+      icon: <Stethoscope size={34} strokeWidth={2} />,
+      label: "Doctor",
+      value: "doctor",
+    },
+    {
+      icon: <Zap size={34} strokeWidth={2} />,
+      label: "Electricistas",
+      value: "electricistas",
+    },
     {
       icon: <BriefcaseBusiness size={34} strokeWidth={2} />,
       label: "Gerentes",
       value: "gerentes",
     },
-    { icon: <ChefHat size={34} strokeWidth={2} />, label: "Cocineros", value: "cocineros" },
-    { icon: <Palette size={34} strokeWidth={2} />, label: "Diseñador", value: "diseñador" },
-    { icon: <Code2 size={34} strokeWidth={2} />, label: "Programador", value: "programador" },
-    { icon: <Heart size={34} strokeWidth={2} />, label: "Más", value: "all" },
+    {
+      icon: <ChefHat size={34} strokeWidth={2} />,
+      label: "Cocineros",
+      value: "cocineros",
+    },
+    {
+      icon: <Palette size={34} strokeWidth={2} />,
+      label: "Diseñador",
+      value: "diseñador",
+    },
+    {
+      icon: <Code2 size={34} strokeWidth={2} />,
+      label: "Programador",
+      value: "programador",
+    },
+    {
+      icon: <Heart size={34} strokeWidth={2} />,
+      label: "Más",
+      value: "all",
+    },
   ];
 
-  const vacantes = [
-    {
-      id: 1,
-      title: "Doctor General",
-      company: "Clínica San José",
-      location: "Nicaragua",
-      badge1: "Tiempo completo",
-      salary: "C$ 4,500",
-      timePosted: "Hace 1 hora",
-      logo: xyz,
-      category: "doctor",
-    },
-    {
-      id: 2,
-      title: "Electricista Industrial",
-      company: "ElectroSol",
-      location: "Nicaragua",
-      badge1: "Tiempo completo",
-      salary: "C$ 3,500",
-      timePosted: "Hace 3 horas",
-      logo: xyz,
-      category: "electricistas",
-    },
-    {
-      id: 3,
-      title: "Gerente de Proyecto",
-      company: "Constructora X",
-      location: "Nicaragua",
-      badge1: "Tiempo completo",
-      salary: "C$ 6,200",
-      timePosted: "Hace 5 horas",
-      logo: xyz,
-      category: "gerentes",
-    },
-    {
-      id: 4,
-      title: "Cocinero Profesional",
-      company: "Restaurante Sabor",
-      location: "Nicaragua",
-      badge1: "Tiempo completo",
-      salary: "C$ 2,200",
-      timePosted: "Hace 2 horas",
-      logo: xyz,
-      category: "cocineros",
-    },
-    {
-      id: 5,
-      title: "Desarrollador Web",
-      company: "Empresa XYZ",
-      location: "Nicaragua",
-      badge1: "Tiempo completo",
-      salary: "C$ 4,000",
-      timePosted: "Hace 2 horas",
-      logo: xyz,
-      category: "programador",
-    },
-    {
-      id: 6,
-      title: "Diseñador UI/UX",
-      company: "Agencia Creativa",
-      location: "Nicaragua",
-      badge1: "Tiempo completo",
-      salary: "C$ 3,800",
-      timePosted: "Hace 7 horas",
-      logo: xyz,
-      category: "diseñador",
-    },
-  ];
+  useEffect(() => {
+    const obtenerVacantes = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:3000/vacantes"
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          setError(
+            data.error ||
+            "No se pudieron cargar las vacantes."
+          );
+          setCargando(false);
+          return;
+        }
+
+        setVacantes(data);
+        setError("");
+        setCargando(false);
+
+      } catch (error) {
+        console.error(
+          "Error al cargar vacantes:",
+          error
+        );
+
+        setError(
+          "No se pudo conectar con el servidor."
+        );
+
+        setCargando(false);
+      }
+    };
+
+    obtenerVacantes();
+  }, []);
 
   const toggleLike = (id) => {
     setLikedItems((prev) => ({
@@ -117,47 +114,149 @@ export default function Inicio() {
     }));
   };
 
-  const filteredVacantes = vacantes.filter((vacante) => {
-    const query = searchQuery.toLowerCase().trim();
-    const selected = selectedCategory.toLowerCase();
+  const formatearSalario = (salario) => {
+    if (!salario) return null;
 
-    const matchesQuery =
-      !query ||
-      [
-        vacante.title,
-        vacante.company,
-        vacante.location,
-        vacante.badge1,
-        vacante.salary,
-        vacante.category,
-      ]
-        .join(" ")
-        .toLowerCase()
-        .includes(query);
+    return `C$ ${Number(salario).toLocaleString()}`;
+  };
 
-    const matchesCategory =
-      !selected || selected === "all" || vacante.category === selected;
+  const calcularTiempoPublicado = (fecha) => {
+    if (!fecha) return "";
 
-    return matchesQuery && matchesCategory;
-  });
+    const fechaPublicacion = new Date(fecha);
+    const ahora = new Date();
+
+    const diferencia =
+      ahora.getTime() -
+      fechaPublicacion.getTime();
+
+    const minutos = Math.floor(
+      diferencia / (1000 * 60)
+    );
+
+    const horas = Math.floor(
+      diferencia / (1000 * 60 * 60)
+    );
+
+    const dias = Math.floor(
+      diferencia / (1000 * 60 * 60 * 24)
+    );
+
+    if (minutos < 1) {
+      return "Publicado ahora";
+    }
+
+    if (minutos < 60) {
+      return `Hace ${minutos} min`;
+    }
+
+    if (horas < 24) {
+      return `Hace ${horas} ${
+        horas === 1 ? "hora" : "horas"
+      }`;
+    }
+
+    return `Hace ${dias} ${
+      dias === 1 ? "día" : "días"
+    }`;
+  };
+
+  const filteredVacantes = vacantes.filter(
+    (vacante) => {
+      const query =
+        searchQuery.toLowerCase().trim();
+
+      const categoria =
+        vacante.categorias
+          ?.nombre_categoria
+          ?.toLowerCase() || "";
+
+      const empresa =
+        vacante.perfiles_empresa
+          ?.nombre_empresa
+          ?.toLowerCase() || "";
+
+      const municipio =
+        vacante.municipios
+          ?.nombre_municipio
+          ?.toLowerCase() || "";
+
+      const titulo =
+        vacante.titulo
+          ?.toLowerCase() || "";
+
+      const modalidad =
+        vacante.modalidad
+          ?.toLowerCase() || "";
+
+      const tipoEmpleo =
+        vacante.tipo_empleo
+          ?.toLowerCase() || "";
+
+      const matchesQuery =
+        !query ||
+        [
+          titulo,
+          empresa,
+          municipio,
+          modalidad,
+          tipoEmpleo,
+          categoria,
+        ]
+          .join(" ")
+          .includes(query);
+
+      const selected =
+        selectedCategory.toLowerCase();
+
+      const matchesCategory =
+        selected === "all" ||
+        categoria.includes(selected) ||
+        titulo.includes(selected);
+
+      return (
+        matchesQuery &&
+        matchesCategory
+      );
+    }
+  );
 
   return (
     <div className="inicio-page">
+
       {/* Header */}
       <div className="inicio-header">
-        <button className="menu-btn" aria-label="Abrir menú">
+        <button
+          className="menu-btn"
+          aria-label="Abrir menú"
+        >
           <Menu size={20} />
         </button>
 
         <div className="logo-container">
-          <img src={logo} className="logo" alt="Worksy" />
+          <img
+            src={logo}
+            className="logo"
+            alt="Worksy"
+          />
         </div>
 
         <div className="header-icons">
-          <Link to="/notificaciones" aria-label="Notificaciones">
-            <Bell className="icon" size={20} />
+          <Link
+            to="/notificaciones"
+            aria-label="Notificaciones"
+          >
+            <Bell
+              className="icon"
+              size={20}
+            />
           </Link>
-          <Link to="/perfil" className="profile-avatar" aria-label="Abrir perfil">
+
+          <Link
+            to="/perfil"
+            className="profile-avatar"
+            aria-label="Abrir perfil"
+          >
             <UserRound size={20} />
           </Link>
         </div>
@@ -166,6 +265,7 @@ export default function Inicio() {
       {/* Search */}
       <div className="inicio-search-container">
         <div className="search-wrapper">
+
           <span className="search-icon">
             <Search size={18} />
           </span>
@@ -174,35 +274,61 @@ export default function Inicio() {
             type="text"
             placeholder="Buscar empleos, empresas o servicios"
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e) =>
+              setSearchQuery(
+                e.target.value
+              )
+            }
             className="search-input"
           />
+
         </div>
       </div>
 
       {/* Categorías */}
       <div className="inicio-categories-section">
+
         <div className="section-header">
           <h2>Categoría</h2>
 
-          <a href="#" className="see-all">
+          <a
+            href="#"
+            className="see-all"
+          >
             Ver todas
           </a>
         </div>
 
         <div className="categories-grid">
-          {categories.map((cat, index) => (
-            <button
-              key={index}
-              type="button"
-              className={`category-item ${selectedCategory === cat.value ? "active" : ""}`}
-              onClick={() => setSelectedCategory(cat.value)}
-            >
-              <div className="category-icon">{cat.icon}</div>
 
-              <p>{cat.label}</p>
-            </button>
-          ))}
+          {categories.map(
+            (cat, index) => (
+              <button
+                key={index}
+                type="button"
+                className={`category-item ${
+                  selectedCategory ===
+                  cat.value
+                    ? "active"
+                    : ""
+                }`}
+                onClick={() =>
+                  setSelectedCategory(
+                    cat.value
+                  )
+                }
+              >
+
+                <div className="category-icon">
+                  {cat.icon}
+                </div>
+
+                <p>{cat.label}</p>
+
+              </button>
+            )
+          )}
+
         </div>
       </div>
 
@@ -210,73 +336,191 @@ export default function Inicio() {
       <div className="inicio-vacantes-section">
         <h2>Vacantes recientes</h2>
 
-        <div className="vacantes-grid">
-          {filteredVacantes.length > 0 ? (
-            filteredVacantes.map((vacante) => (
-              <div key={vacante.id} className="vacante-card-inicio">
-                <div className="vacante-header-inicio">
-                  <div className="vacante-logo-inicio">
-                    <img
-                      src={vacante.logo}
-                      alt={vacante.company}
-                      className="vacante-logo-image"
-                    />
-                  </div>
+        {error && (
+          <p className="no-results">
+            {error}
+          </p>
+        )}
 
-                  <button
-                    className="like-btn-inicio"
-                    onClick={() => toggleLike(vacante.id)}
-                    style={{
-                      color: likedItems[vacante.id] ? "#ff4d6d" : "#bbb",
-                    }}
-                    aria-label="Me gusta"
-                  >
-                    <Heart
-                      size={18}
-                      fill={likedItems[vacante.id] ? "#ff4d6d" : "none"}
-                      stroke={likedItems[vacante.id] ? "#ff4d6d" : "#bbb"}
-                    />
-                  </button>
-                </div>
+        {cargando ? (
+          <p className="no-results">
+            Cargando vacantes...
+          </p>
+        ) : (
+          <div className="vacantes-grid">
 
-                <div className="vacante-info-inicio">
-                  <h3>{vacante.title}</h3>
+            {filteredVacantes.length > 0 ? (
 
-                  <p className="company">{vacante.company}</p>
+              filteredVacantes.map(
+                (vacante) => {
 
-                  <p className="location">{vacante.location}</p>
-                </div>
+                  const empresa =
+                    vacante.perfiles_empresa
+                      ?.nombre_empresa ||
+                    "Empresa";
 
-                <div className="vacante-footer-inicio">
-                  <span className="badge-inicio">{vacante.badge1}</span>
+                  const logoEmpresa =
+                    vacante.perfiles_empresa
+                      ?.logo_empresa;
 
-                  <span className="badge-inicio salary">{vacante.salary}</span>
+                  const municipio =
+                    vacante.municipios
+                      ?.nombre_municipio;
 
-                  <p className="time-posted">{vacante.timePosted}</p>
-                </div>
-              </div>
-            ))
-          ) : (
-            <p className="no-results">No se encontraron vacantes para tu búsqueda.</p>
-          )}
-        </div>
+                  const salario =
+                    formatearSalario(
+                      vacante.salario
+                    );
+
+                  return (
+                    <div
+                      key={
+                        vacante.id_vacante
+                      }
+                      className="vacante-card-inicio"
+                    >
+
+                      <div className="vacante-header-inicio">
+
+                        <div className="vacante-logo-inicio">
+                          <img
+                            src={
+                              logoEmpresa ||
+                              xyz
+                            }
+                            alt={empresa}
+                            className="vacante-logo-image"
+                          />
+                        </div>
+
+                        <button
+                          className="like-btn-inicio"
+                          onClick={() =>
+                            toggleLike(
+                              vacante.id_vacante
+                            )
+                          }
+                          style={{
+                            color:
+                              likedItems[
+                                vacante
+                                  .id_vacante
+                              ]
+                                ? "#ff4d6d"
+                                : "#bbb",
+                          }}
+                          aria-label="Me gusta"
+                        >
+                          <Heart
+                            size={18}
+                            fill={
+                              likedItems[
+                                vacante
+                                  .id_vacante
+                              ]
+                                ? "#ff4d6d"
+                                : "none"
+                            }
+                            stroke={
+                              likedItems[
+                                vacante
+                                  .id_vacante
+                              ]
+                                ? "#ff4d6d"
+                                : "#bbb"
+                            }
+                          />
+                        </button>
+
+                      </div>
+
+                      <div className="vacante-info-inicio">
+
+                        <h3>
+                          {vacante.titulo}
+                        </h3>
+
+                        <p className="company">
+                          {empresa}
+                        </p>
+
+                        {municipio && (
+                          <p className="location">
+                            {municipio}
+                          </p>
+                        )}
+
+                      </div>
+
+                      <div className="vacante-footer-inicio">
+
+                        {vacante.tipo_empleo && (
+                          <span className="badge-inicio">
+                            {
+                              vacante.tipo_empleo
+                            }
+                          </span>
+                        )}
+
+                        {salario && (
+                          <span className="badge-inicio salary">
+                            {salario}
+                          </span>
+                        )}
+
+                        <p className="time-posted">
+                          {calcularTiempoPublicado(
+                            vacante.fecha_publicacion
+                          )}
+                        </p>
+
+                      </div>
+
+                    </div>
+                  );
+                }
+              )
+
+            ) : (
+              <p className="no-results">
+                No se encontraron vacantes para tu búsqueda.
+              </p>
+            )}
+
+          </div>
+        )}
       </div>
 
       {/* Bottom Navigation */}
       <div className="bottom-nav">
+
         <div className="nav-item active">
           <House size={20} />
         </div>
-        <Link to="/chat" className="nav-item">
-          <MessageCircleMore size={20} />
+
+        <Link
+          to="/chat"
+          className="nav-item"
+        >
+          <MessageCircleMore
+            size={20}
+          />
         </Link>
+
         <div className="nav-item">
           <Plus size={20} />
         </div>
-        <Link to="/perfil" className="nav-item" aria-label="Abrir perfil">
+
+        <Link
+          to="/perfil"
+          className="nav-item"
+          aria-label="Abrir perfil"
+        >
           <UserRound size={20} />
         </Link>
+
       </div>
+
     </div>
   );
 }
